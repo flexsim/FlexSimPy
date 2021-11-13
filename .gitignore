@@ -1,0 +1,6 @@
+﻿.vs
+x64
+*.dll
+*.exp
+*.pdb
+PyConnector310.lib
