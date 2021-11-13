@@ -141,7 +141,14 @@ public:
 				auto localCallback = [](void* data) -> void {
 					DataParam* param = (DataParam*)data;
 					Callback& callback = param->first;
-					callback();
+					try {
+						callback();
+					}
+					catch (...) {
+						param->second.set_value();
+						delete param;
+						throw;
+					}
 					param->second.set_value();
 					delete param;
 				};
@@ -154,7 +161,13 @@ public:
 			Callback* callbackPtr = new Callback(std::move(callback));
 			auto localCallback = [](void* data) -> void {
 				Callback* callback = (Callback*)data;
-				(*callback)();
+				try {
+					(*callback)();
+				}
+				catch (...) {
+					delete callback;
+					throw;
+				}
 				delete callback;
 			};
 			postThreadMessage(mainThreadID, FLEXSIM_MESSAGE_USER_CALLBACK,
@@ -226,6 +239,7 @@ public:
 	std::condition_variable timerWaitCondition;
 	std::mutex timerThreadDataMutex;
 
+	engine_export const char* envPathSep(); // returns a path separator for environment variables: ';' on windows, ':' on POSIX
 };
 
 extern engine_export Platform platform;

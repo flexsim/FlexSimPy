@@ -64,6 +64,11 @@ bool FlexSimPy::initialize()
 {
     if (isInitialized)
         return true;
+
+    string pPath = modeldir() + platform.envPathSep() + pdir() + "python";
+
+    platform.setEnv("PYTHONPATH", pPath.c_str());
+#if 0
     PyStatus status;
 
     PyConfig config;
@@ -72,23 +77,27 @@ bool FlexSimPy::initialize()
 
     /* Set the program name. Implicitly preinitialize Python. */
     //status = PyConfig_SetString(&config, &config.home, nowide::widen(directories.modelDir).c_str());
-    std::string modelDir = modeldir();
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+    //std::string modelDir = modeldir();
+    //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
 
-    status = PyConfig_SetString(&config, &config.pythonpath_env, convert.from_bytes(modelDir).c_str());
+    //status = PyConfig_SetString(&config, &config.pythonpath_env, convert.from_bytes(modelDir).c_str());
     //platform.setEnv("__PYVENV_LAUNCHER__", "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe");
     //status = PyConfig_SetString(&config, &config.executable, L);
-    if (PyStatus_Exception(status))
-        return false;
+    //if (PyStatus_Exception(status))
+       // return false;
     
-    
+#endif
+
     if (PyImport_AppendInittab("consoleredirection", PyInit_consoleredirection) == -1)
         return false;
 
+#if 0
     status = Py_InitializeFromConfig(&config);
     if (PyStatus_Exception(status))
         return false;
-
+#else
+    Py_Initialize();
+#endif
     //PyObject* redirectModule = PyModule_Create(&consoleRedirectModule);
 
     int result = PyRun_SimpleString("\
@@ -196,10 +205,10 @@ Variant PyCode::evaluate(CallPoint* callPoint)
         return evalNode->callMemberFunction(0, callPoint->theinstance, callPoint->theclass, nullptr, nullptr, callPoint->involved, callPoint);
     }
 #endif
-    int numParams = parqty();
+    int numParams = parqty(callPoint);
     PyObject* tuple = PyTuple_New(numParams);
     for (int i = 1; i <= numParams; i++) {
-        PyObject* p = convertToPyObject(param(i));
+        PyObject* p = convertToPyObject(_param(i, callPoint));
         PyTuple_SetItem(tuple, (size_t)i - 1, p);
     }
     PyObject* result = PyObject_Call(func, tuple, nullptr);
@@ -324,9 +333,11 @@ Variant PyCode::convertToVariant(PyObject* obj)
 
 void PyCode::bindToNode(TreeNode* t, PyObject* func)
 {
-    if (!objectexists(llbranch(t)))
+    auto b = t->branch;
+    if (!b) {
         llinsertbranch(t);
-    auto b = llbranch(t);
+        b = t->branch;
+    }
     PyCode* pyCode = new PyCode(func);
     b->dataType = 0;
     b->addSimpleData(pyCode, 0);
@@ -342,7 +353,7 @@ void PyCode_bindToNode(TreeNode* t, PyObject* func)
 
 PyCode* PyCode::getCode(TreeNode* t)
 {
-    TreeNode* branch = llbranch(t);
+    TreeNode* branch = t->branch;
     if (!branch)
         return nullptr;
 

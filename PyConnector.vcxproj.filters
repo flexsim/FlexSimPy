@@ -28,5 +28,8 @@
     <ClCompile Include="FlexSimPy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="flexsimcontent\Platform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

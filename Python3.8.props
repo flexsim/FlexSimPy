@@ -6,7 +6,11 @@
     <DLL_SUFFIX>38</DLL_SUFFIX>
   </PropertyGroup>
   <PropertyGroup />
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>PYTHON_VERSION=0x0380;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="PYTHON_VERSION">
       <Value>$(PYTHON_VERSION)</Value>

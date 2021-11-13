@@ -4,3 +4,4 @@ x64
 *.exp
 *.pdb
 PyConnector310.lib
+out
