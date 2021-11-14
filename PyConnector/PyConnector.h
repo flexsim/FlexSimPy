@@ -1,4 +1,11 @@
 #pragma once
+
+#ifdef _WINDOWS
+#define PY_CONNECTOR_EXPORT __declspec(dllexport)
+#else
+#define PY_CONNECTOR_EXPORT
+#endif
+
 #include "BasicClasses.h"
 #include "CodeSDT.h"
 #include <string>
@@ -13,9 +20,9 @@
 #endif
 
 namespace FlexSim {
-class FlexSimPy {
+class PyConnector {
 public:
-    ~FlexSimPy();
+    ~PyConnector();
 
 private:
     friend class PyCode;
@@ -54,6 +61,6 @@ public:
     virtual bool isConnected() override { return func != nullptr; }
 };
 
-extern FlexSimPy flexSimPy;
+extern PyConnector flexSimPy;
 
 }

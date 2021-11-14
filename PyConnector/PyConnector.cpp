@@ -1,24 +1,39 @@
-#include "FlexSimPy.h"
-#include "FlexSimDefs.h"
 #include "PyConnector.h"
-#include <vector>
-//#include "FileUtils.h"
-#include <codecvt>
+#include "FlexSimDefs.h"
+#include <string>
 
-#include "ScopeGuard.h"
-//#include "CallPoint.h"
-
+using std::string;
 
 namespace FlexSim {
+visible ObjectDataType* createodtderivative(char* classname)
+{
+	return NULL;
+}
 
-FlexSimPy flexSimPy;
+visible SimpleDataType* createsdtderivative(char* classname)
+{
+	return NULL;
+}
+
+visible void dllinitialize()
+{
+
+}
+
+visible void dllcleanup()
+{
+
+}
+
+
+PyConnector flexSimPy;
 const char* PyCode::s_classFactory = "PyCode";
-PyMethodDef FlexSimPy::consoleRedirectModuleFuncs[] = {
+PyMethodDef PyConnector::consoleRedirectModuleFuncs[] = {
     {"redirectStdOut",  redirectStdOut, METH_VARARGS,  "Redirect stdout to FlexSim"},
     {"redirectStdErr",  redirectStdErr, METH_VARARGS,  "Redirect stderr to FlexSim"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
-PyModuleDef FlexSimPy::consoleRedirectModule = {
+PyModuleDef PyConnector::consoleRedirectModule = {
     PyModuleDef_HEAD_INIT,
     "consoleredirection",   /* name of module */
     nullptr, /* module documentation, may be NULL */
@@ -27,13 +42,13 @@ PyModuleDef FlexSimPy::consoleRedirectModule = {
     consoleRedirectModuleFuncs
 };
 
-FlexSimPy::~FlexSimPy()
+PyConnector::~PyConnector()
 {
     if (isInitialized)
         Py_Finalize();
 }
 
-PyObject* FlexSimPy::redirectStdOut(PyObject* self, PyObject* args)
+PyObject* PyConnector::redirectStdOut(PyObject* self, PyObject* args)
 {
     const char* string;
     if (!PyArg_ParseTuple(args, "s", &string))
@@ -43,7 +58,7 @@ PyObject* FlexSimPy::redirectStdOut(PyObject* self, PyObject* args)
     Py_INCREF(Py_None);
     return Py_None;
 }
-PyObject* FlexSimPy::redirectStdErr(PyObject* self, PyObject* args)
+PyObject* PyConnector::redirectStdErr(PyObject* self, PyObject* args)
 {
     const char* string;
     if (!PyArg_ParseTuple(args, "s", &string))
@@ -60,7 +75,7 @@ PyMODINIT_FUNC PyInit_consoleredirection(void)
     return PyModule_Create(&flexSimPy.consoleRedirectModule);
 }
 
-bool FlexSimPy::initialize()
+bool PyConnector::initialize()
 {
     if (isInitialized)
         return true;
@@ -85,7 +100,7 @@ bool FlexSimPy::initialize()
     //status = PyConfig_SetString(&config, &config.executable, L);
     //if (PyStatus_Exception(status))
        // return false;
-    
+
 #endif
 
     if (PyImport_AppendInittab("consoleredirection", PyInit_consoleredirection) == -1)
@@ -120,7 +135,7 @@ sys.stderr = StdErrRedirect()\n");
     return true;
 }
 
-PyObject* FlexSimPy::findProc(const char* moduleName, const char* procName)
+PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
 {
     if (!isInitialized) {
         if (!initialize())
@@ -163,7 +178,7 @@ PyObject * FlexSimPy_findProc(const char* moduleName, const char* procName)
     return flexSimPy.findProc(moduleName, procName);
 }
 
-void FlexSimPy::clearModules()
+void PyConnector::clearModules()
 {
     for (auto& boundNode : boundNodes) {
         if (boundNode)
@@ -175,7 +190,7 @@ void FlexSimPy::clearModules()
     importedModules.clear();
 }
 
-void FlexSimPy::reloadModules()
+void PyConnector::reloadModules()
 {
     for (auto& boundNode : boundNodes) {
         if (boundNode)
@@ -223,36 +238,36 @@ Variant PyCode::evaluate(CallPoint* callPoint)
 PyObject* PyCode::convertToPyObject(const Variant& v)
 {
     switch (v.type) {
-        case VariantType::String:
-            return PyUnicode_FromString(v.c_str());
-            break;
-        case VariantType::Number:
-            return PyFloat_FromDouble((double)v);
-        case VariantType::Array: {
-            Array a = v;
-            int len = a.length;
-            PyObject* list = PyList_New(len);
-            for (int i = 1; i <= len; i++) {
-                PyObject* obj = convertToPyObject(a[i]);
-                PyList_SetItem(list, i - 1, obj);
-            }
-            return list;
-            break;
+    case VariantType::String:
+        return PyUnicode_FromString(v.c_str());
+        break;
+    case VariantType::Number:
+        return PyFloat_FromDouble((double)v);
+    case VariantType::Array: {
+        Array a = v;
+        int len = a.length;
+        PyObject* list = PyList_New(len);
+        for (int i = 1; i <= len; i++) {
+            PyObject* obj = convertToPyObject(a[i]);
+            PyList_SetItem(list, i - 1, obj);
         }
-        case VariantType::Map: {
-            Map m = v;
-            PyObject* dict = PyDict_New();
-            for (auto iter = m.begin(); iter != m.end(); iter++) {
-                PyObject* key = convertToPyObject(iter.key);
-                PyObject* value = convertToPyObject(iter.value);
-                PyDict_SetItem(dict, key, value);
-            }
-            return dict;
+        return list;
+        break;
+    }
+    case VariantType::Map: {
+        Map m = v;
+        PyObject* dict = PyDict_New();
+        for (auto iter = m.begin(); iter != m.end(); iter++) {
+            PyObject* key = convertToPyObject(iter.key);
+            PyObject* value = convertToPyObject(iter.value);
+            PyDict_SetItem(dict, key, value);
         }
-        default: {
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
+        return dict;
+    }
+    default: {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     }
     return Py_None;
 }
@@ -262,7 +277,7 @@ Variant PyCode::convertToVariant(PyObject* obj)
     Variant result;
     if (PyUnicode_Check(obj)) {
         PyObject* src = obj;
-        size_t size = PyUnicode_GET_LENGTH(obj); 
+        size_t size = PyUnicode_GET_LENGTH(obj);
         int type = PyUnicode_KIND(obj);
         if (type != PyUnicode_1BYTE_KIND) {
             src = PyUnicode_AsUTF8String(obj);
@@ -345,7 +360,7 @@ void PyCode::bindToNode(TreeNode* t, PyObject* func)
 }
 
 extern "C" PY_CONNECTOR_EXPORT
-void PyCode_bindToNode(TreeNode* t, PyObject* func)
+void PyCode_bindToNode(TreeNode * t, PyObject * func)
 {
     PyCode::bindToNode(t, func);
 }
@@ -371,5 +386,4 @@ PyCode * PyCode_getCode(TreeNode * t)
 {
     return PyCode::getCode(t);
 }
-
 }
