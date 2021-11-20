@@ -14,13 +14,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FlexSimPy.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="FlexSimPy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PyPlatform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyConverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PyPlatform.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlexSimPy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PyConverter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

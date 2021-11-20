@@ -25,7 +25,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1CB9E349-A7F5-4F21-9C8A-034A7481C216}</ProjectGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'" Label="Configuration">
@@ -33,8 +33,8 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\out</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <OutDir>$(SolutionDir)\out\</OutDir>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_10|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -42,8 +42,8 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\out</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <OutDir>$(SolutionDir)\out\</OutDir>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -51,8 +51,8 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\out</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <OutDir>$(SolutionDir)\out\</OutDir>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -60,8 +60,8 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\out</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <OutDir>$(SolutionDir)\out\</OutDir>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -69,8 +69,8 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\out</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <OutDir>$(SolutionDir)\out\</OutDir>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -98,23 +98,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <ClCompile>
@@ -126,13 +126,17 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -149,8 +153,12 @@
       <PreprocessorDefinitions>WIN32;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>false</EnableModules>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,6 +167,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -176,7 +186,11 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>true</EnableModules>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -185,6 +199,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -202,7 +218,11 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>true</EnableModules>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -211,6 +231,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -228,7 +250,11 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>true</EnableModules>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -237,16 +263,22 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="FlexSimPy.h" />
+    <ClCompile Include="FlexSimPy.cpp" />
+    <ClCompile Include="PyConverter.cpp" />
+    <ClCompile Include="PyPlatform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FlexSimPy.cpp" />
+    <ClInclude Include="FlexSimPy.h" />
+    <ClInclude Include="PyConverter.h" />
+    <ClInclude Include="PyPlatform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

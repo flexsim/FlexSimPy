@@ -898,9 +898,7 @@ visible int cppgettitletoken(treenode thetext, int index, ByteBlock* resultblock
 visible int cppgettoken(treenode thetext, int index, ByteBlock* resultblock);
 visible int cppsettitletoken(treenode thetext, int index, ByteBlock* resultblock, char* newtext);
 visible int cppsettoken(treenode thetext, int index, ByteBlock* resultblock, char* newtext);
-static CppQueryLambda defQueryLambda([]() -> Variant {return 0; });
-visible int cpp_query(const char* queryStr, CppQueryLambda& p1 = defQueryLambda, CppQueryLambda& p2 = defQueryLambda, CppQueryLambda& p3 = defQueryLambda, CppQueryLambda& p4 = defQueryLambda,
-	CppQueryLambda& p5 = defQueryLambda, CppQueryLambda& p6 = defQueryLambda, CppQueryLambda& p7 = defQueryLambda, CppQueryLambda& p8 = defQueryLambda, CppQueryLambda& p9 = defQueryLambda);
+
 visible int dbwritechanges();
 visible double divide(double n1, double n2);
 visible double drawrect(treenode viewnode, double x, double y, double z, double x2, double y2, double z2, double red, double green, double blue);
@@ -1311,47 +1309,7 @@ visible double exportdataset(treenode, const char* table, int format, const char
 inline int aggregateundorecords(TreeNode* view, const char* description, int id1, int id2, int id3 = 0, int id4 = 0, int id5 = 0, int id6 = 0, int id7 = 0)
 	{ return aggregateundorecords(view, description, id1, id2, id3, id4, id5, id6, id7, 0); }
 
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1)
-{
-	return cpp_query(queryStr, p1);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2)
-{
-	return cpp_query(queryStr, p1, p2);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3)
-{
-	return cpp_query(queryStr, p1, p2, p3);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4,
-	CppQueryLambda&& p5)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4, p5);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4,
-	CppQueryLambda&& p5, CppQueryLambda&& p6)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4, p5, p6);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4,
-	CppQueryLambda&& p5, CppQueryLambda&& p6, CppQueryLambda&& p7)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4, p5, p6, p7);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4,
-	CppQueryLambda&& p5, CppQueryLambda&& p6, CppQueryLambda&& p7, CppQueryLambda&& p8)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4, p5, p6, p7, p8);
-}
-inline int cpp_query(const char* queryStr, CppQueryLambda&& p1, CppQueryLambda&& p2, CppQueryLambda&& p3, CppQueryLambda&& p4,
-	CppQueryLambda&& p5, CppQueryLambda&& p6, CppQueryLambda&& p7, CppQueryLambda&& p8, CppQueryLambda&& p9)
-{
-	return cpp_query(queryStr, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-}
+
 engine_export Variant $iter(int index);
 inline Variant getqueryvalue(int row, const std::string& colName) {return getqueryvalue(row, (char*)colName.c_str());}
 

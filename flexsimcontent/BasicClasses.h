@@ -42,8 +42,10 @@ class ListViewDataSource;
 class UndoRecord;
 class DebuggerUIDelegate;
 class DebugInstance;
+class CodeSDT;
 class FlexScriptCode;
 class CppCode;
+class PyCode;
 class FlexScriptDebugInstance;
 struct PropertyBinding;
 struct Property; 
@@ -63,6 +65,7 @@ class CppQueryLambda;
 class ExperimentChildManager;
 class EmpiricalDistribution;
 class StateTable;
+class Platform;
 }
 
 //class AviPlayer;

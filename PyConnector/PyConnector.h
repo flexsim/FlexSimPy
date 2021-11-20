@@ -47,8 +47,6 @@ public:
 class PyCode : public CodeSDT {
     PyObject* func = nullptr;
     int resetCount = 0;
-    static PyObject* convertToPyObject(const Variant& v);
-    static Variant convertToVariant(PyObject* obj);
 public:
     static const char* s_classFactory;
     virtual const char* getClassFactory() override { return s_classFactory; }

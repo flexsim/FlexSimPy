@@ -7,9 +7,11 @@
 #	include <Shlwapi.h>
 
 #endif
+#ifdef FLEXSIM_ENGINE_COMPILE
 // I get errors with the flexscript lexer. So, here I don't inlude utf8 stuff when including the lexer
 #ifndef YY_NO_UNISTD_H
 #	include "UTF8.h"
+#endif
 #endif
 #include "BasicMacros.h"
 #include <queue>
