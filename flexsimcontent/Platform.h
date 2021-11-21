@@ -1,6 +1,10 @@
 #pragma once
 #if defined _WINDOWS
-#	if defined FLEXSIM_BOOST
+// I don't want to have to rope boost into every single cpp file's compile, so I'm going to force 
+// any cpp file that will use boost asio to define USING_BOOST_ASIO as the first line in their cpp file
+// the problem is, boost will throw an error if you include windows.h before including boost. So, if 
+// I'm going to include windows.h, I have to include boost first (that is, if I'm going to use boost)
+#	if defined FLEXSIM_BOOST  && defined USING_BOOST_ASIO
 #		include <boost/asio.hpp>
 #	endif
 #	include <Windows.h> 
@@ -122,12 +126,21 @@ public:
 public:
 	engine_export void lockMainThread();
 	engine_export void unlockMainThread();
+	int getMainThreadID();
 
+engine_private:
 	bool isInitialized = false;
 	void init();
+#ifdef FLEXSIM_ENGINE_COMPILE
 	int mainThreadID;
+#else
+	int __mainThreadID;
+public:
+	__declspec(property(get = getMainThreadID)) int mainThreadID;
+#endif
 	std::mutex mainThreadMutex;
 	std::mutex altThreadMutex;
+public:
 	typedef void (*CallbackFuncPtr)(void* data);
 	template <class Callback>
 	void callMainThreadCallback(Callback callback, bool wait)

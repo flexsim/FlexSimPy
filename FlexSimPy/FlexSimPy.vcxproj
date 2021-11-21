@@ -99,22 +99,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <ClCompile>
@@ -122,10 +127,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;COMPILING_FLEXSIM_CONTENT;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
@@ -135,7 +140,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
       <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
@@ -167,7 +172,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
       <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
@@ -199,7 +204,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
       <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
@@ -231,7 +236,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
       <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
@@ -263,7 +268,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName).pyd</OutputFile>
+      <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
       <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
@@ -279,6 +284,9 @@
     <ClInclude Include="FlexSimPy.h" />
     <ClInclude Include="PyConverter.h" />
     <ClInclude Include="PyPlatform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestFlexSimPy.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

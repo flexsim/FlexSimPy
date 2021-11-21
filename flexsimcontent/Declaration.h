@@ -908,8 +908,8 @@ visible double excelimportnode(treenode table, int startrow, int startcol, int n
 engine_export double excelimportnode(treenode table, int startrow, int startcol, int numrows, int numcols);
 visible char* excelread(int Row, int Col, char rowchar = 'r', char colchar = 'c');
 visible char* excelwrite(char* inStr, int Row, int Col, char RowChar = 'r', char ColChar = 'c');
-visible double executefsnode(TreeNode* fsNode, TreeNode* c, TreeNode* i, void* data, char* msg, int nobuild);
-visible double executestring(char* str, treenode c = NULL, treenode i = NULL, void* data = NULL);
+engine_export Variant executefsnode(TreeNode* fsNode, TreeNode* c, TreeNode* i, const Variant& data = Variant(), int unused = 0);
+engine_export Variant executestring(const char* str, treenode c = NULL, treenode i = NULL, const Variant& data = Variant());
 visible double ge(double n1, double n2);
 visible double gt(double n1, double n2);
 visible int installpackage(char* packagefile);
@@ -1198,11 +1198,7 @@ engine_export int gettablecols(int table);
 
 inline int makearray(int size){return size;}
 
-inline double executefsnode(TreeNode* fsNode, TreeNode* c = NULL, TreeNode* i = NULL, void* data = NULL, char* msg = 0)
-{
-	return executefsnode(fsNode, c, i, data, msg, 0);
-}
-inline double executestring(string str, treenode c = NULL, treenode i = NULL, void* data = NULL, char* msg = 0, int nobuild = 0)
+inline Variant executestring(const string& str, treenode c = NULL, treenode i = NULL, const Variant& data = Variant())
 {
 	return executestring((char*)str.c_str(), c, i, data);
 }

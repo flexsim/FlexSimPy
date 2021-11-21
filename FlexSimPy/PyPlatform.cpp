@@ -14,7 +14,7 @@ DllModule PyPlatform::getModuleHandle(const char* _dllName)
 #else 
 	if (dllName.substr(dllPath.length() - 3, 3).compare(".so") != 0)
 		dllName.append(".so");
-	DllModule mod = dlopen(dllName.c_str(), RTLD_LAZY);
+	DllModule mod = dlopen(dllName.c_str(), RTLD_NOLOAD);
 	return mod;
 #endif
 }
