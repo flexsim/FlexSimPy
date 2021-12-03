@@ -285,9 +285,6 @@
     <ClInclude Include="PyConverter.h" />
     <ClInclude Include="PyPlatform.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="TestFlexSimPy.py" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

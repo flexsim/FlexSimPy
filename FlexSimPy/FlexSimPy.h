@@ -57,6 +57,8 @@ struct Controller {
                 PyGILState_Release(gstate);
             }, true);
             Py_END_ALLOW_THREADS
+            if (result == nullptr && errorStr.length() > 0)
+                PyErr_SetString(PyExc_RuntimeError, errorStr.c_str());
             return result;
         }
     }
@@ -85,6 +87,8 @@ struct Controller {
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->yield(args); }); }
     static PyObject* s_await(Controller* self, PyObject* args)
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->await(args); }); }
+
+    static std::string errorStr;
 };
 
 

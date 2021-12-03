@@ -13,6 +13,7 @@ using std::cin;
 
 namespace FlexSim {
 
+ std::string Controller::errorStr;
 FlexSimPy FlexSimPy::inst;
 
 PyMethodDef FlexSimPy::methods[] = {
@@ -26,7 +27,7 @@ PyMethodDef Controller::methods[] = {
     {"open",  (PyCFunction)s_open, METH_VARARGS, "Open a FlexSim model."},
     {"reset",  (PyCFunction)s_reset, METH_VARARGS, "Reset the currently open FlexSim model."},
     {"run",  (PyCFunction)s_run, METH_VARARGS, "Set the currently open FlexSim model to be running."},
-    {"stop",  (PyCFunction)s_run, METH_VARARGS, "Set the currently open FlexSim model to be running."},
+    {"stop",  (PyCFunction)s_stop, METH_VARARGS, "Set the currently open FlexSim model to be running."},
     {"getParameter",  (PyCFunction)s_getParameter, METH_VARARGS, "Get a model parameter."},
     {"setParameter",  (PyCFunction)s_setParameter, METH_VARARGS, "Set a model parameter."},
     {"getPerformanceMeasure",  (PyCFunction)s_getPerformanceMeasure, METH_VARARGS, "Get a model performance measure value."},
@@ -103,22 +104,27 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
         Controller::__init__((PyObject*)controller, nullptr, nullptr);
         Py_INCREF(inProcessController);
         Py_INCREF(inProcessController);
-        controller->concurrencyType = concurrencyType;
+        int showGUI = false;
+        int checkLicense = true;
         const char* keywords[] = {
-            "Concurrency",
-            "Dir",
-            "Arguments",
+            "concurrency",
+            "dir",
+            "args",
+            "showGUI",
+            "checkLicense",
             nullptr
         };
-        PyArg_ParseTupleAndKeywords(args, kwargs, "|iss", (char**)keywords, &concurrencyType, &dllDir, &userArgs);
+        PyArg_ParseTupleAndKeywords(args, kwargs, "|isspp", (char**)keywords, &concurrencyType, &dllDir, 
+            &userArgs, &showGUI, &checkLicense);
+        controller->concurrencyType = concurrencyType;
 
         pyPlatform.setDllDirectory(dllDir);
         flexSimApp = &FlexSimApplication::getInstance();
 
         int flags = 0;
         string prefix = "";
-        if (!strstr(userArgs, "maintenance "))
-            prefix = "/maintenance nogui_skiplicensecheck ";
+        if (!strstr(userArgs, "maintenance ") && (!showGUI || !checkLicense))
+            prefix.assign("/maintenance ").append(showGUI ? "" : "nogui_").append(checkLicense ? "" : "skiplicensecheck").append(" ");
         string argStr = prefix + userArgs;
         auto* platform = &FlexSimApplication::getPlatform();
         if (concurrencyType == Controller::LAUNCH_ASYNCHRONOUS) {
@@ -185,12 +191,13 @@ treenode Controller::findParameter(const char* name, bool isPerformanceMeasure)
     const char* path = isPerformanceMeasure ? "MODEL:/Tools/PerformanceMeasureTables" : "MODEL:/Tools/ParameterTables";
     treenode x = model()->find(path);
     if (x) {
+        const char* varPath = isPerformanceMeasure ? ">variables/performanceMeasures" : ">variables/parameters";
         for (int i = 1; i <= x->subnodes.length; i++) {
-            treenode table = x->subnodes[i]->find(">variables/parameters");
+            treenode table = x->subnodes[i]->find(varPath);
             if (table) {
                 for (int j = 1; j <= table->subnodes.length; j++) {
                     treenode row = table->subnodes[j];
-                    if (strcmp(row->first->getName(), name) == 0)
+                    if (strcmp(row->first->value.c_str(), name) == 0)
                         return row->subnodes[2];
                 }
             }
@@ -234,6 +241,11 @@ PyObject* Controller::reset(PyObject* args)
 
 PyObject* Controller::run(PyObject* args)
 {
+    double runSpeed = -1.0;
+    PyArg_ParseTuple(args, "d", &runSpeed);
+    if (runSpeed > 0.0) {
+        set(node("MAIN:/project/exec/step"), runSpeed);
+    }
     applicationcommand("run");
     Py_RETURN_NONE;
 }
@@ -252,12 +264,19 @@ PyObject* Controller::getParameter(PyObject* args)
         return nullptr;
     }
     treenode x = findParameter(a[1].c_str(), false);
-    switch (a.length) {
-    case 1: default: return PyConverter::convertToPyObject(x->value);
-    case 2: return PyConverter::convertToPyObject(x->evaluate(a[2]));
-    case 3: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3]));
-    case 4: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3], a[4]));
-    case 5: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3], a[4], a[5]));
+    if (x) {
+        switch (a.length) {
+        case 1: default: return PyConverter::convertToPyObject(x->value);
+        case 2: return PyConverter::convertToPyObject(x->evaluate(a[2]));
+        case 3: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3]));
+        case 4: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3], a[4]));
+        case 5: return PyConverter::convertToPyObject(x->evaluate(a[2], a[3], a[4], a[5]));
+        }
+    }
+    else {
+        errorStr = string("Parameter \'") + a[1].c_str() + "\' not found";
+        PyErr_SetString(PyExc_RuntimeError, errorStr.c_str());
+        return nullptr;
     }
 
     return nullptr;
@@ -270,9 +289,16 @@ PyObject* Controller::setParameter(PyObject* args)
         return nullptr;
     }
     treenode x = findParameter(a[1].c_str(), false);
-    x->value = a[2];
+    if (x) {
+        x->value = a[2];
 
-    Py_RETURN_NONE;
+        Py_RETURN_NONE;
+    }
+    else {
+        errorStr = string("Parameter \'") + a[1].c_str() + "\' not found";
+        PyErr_SetString(PyExc_RuntimeError, errorStr.c_str());
+        return nullptr;
+    }
 }
 
 PyObject* Controller::getPerformanceMeasure(PyObject* args)
@@ -282,8 +308,16 @@ PyObject* Controller::getPerformanceMeasure(PyObject* args)
         PyErr_SetString(PyExc_RuntimeError, "No parameters passed to Controller.getPerformanceMeasure()");
         return nullptr;
     }
-    treenode x = findParameter(a[1].c_str(), false);
-    return PyConverter::convertToPyObject(x->evaluate());
+    treenode x = findParameter(a[1].c_str(), true);
+    if (x) {
+        auto val = x->evaluate();
+        return PyConverter::convertToPyObject(val);
+    }
+    else {
+        errorStr = string("Performance measure \'") + a[1].c_str() + "\' not found";
+        PyErr_SetString(PyExc_RuntimeError, "Performance measure not found");
+        return nullptr;
+    }
 }
 
 PyObject* Controller::time(PyObject* args)
