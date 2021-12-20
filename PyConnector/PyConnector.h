@@ -11,13 +11,7 @@
 #include <string>
 #include <map>
 #include <set>
-#ifdef _DEBUG
-#undef _DEBUG
 #include "Python.h"
-#define _DEBUG
-#else
-#include "Python.h"
-#endif
 
 namespace FlexSim {
 class PyConnector {
@@ -28,9 +22,10 @@ private:
     friend class PyCode;
     bool isInitialized = false;
     std::string initializedWithModelDir;
-    size_t importedWithResetCount = 0;
     std::map<std::string, PyObject*> importedModules;
     std::set<NodeRef> boundNodes;
+
+    bool hasFlexSimPyController = false;
     bool initialize();
 
 
@@ -46,7 +41,6 @@ public:
 
 class PyCode : public CodeSDT {
     PyObject* func = nullptr;
-    int resetCount = 0;
 public:
     static const char* s_classFactory;
     virtual const char* getClassFactory() override { return s_classFactory; }

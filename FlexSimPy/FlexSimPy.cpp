@@ -18,6 +18,8 @@ FlexSimPy FlexSimPy::inst;
 
 PyMethodDef FlexSimPy::methods[] = {
     {"launch",  (PyCFunction)s_launch, METH_VARARGS | METH_KEYWORDS, "Launch a new instance of FlexSim."},
+    {"sendToController",  (PyCFunction)s_sendToController, METH_VARARGS, "Send a value to the controller (matched with controller.receive())."},
+    {"receiveFromController",  (PyCFunction)s_sendToController, METH_VARARGS, "Receive a value from the controller (matched with controller.send())."},
     {nullptr, nullptr, 0, nullptr}
 };
 
@@ -33,8 +35,8 @@ PyMethodDef Controller::methods[] = {
     {"getPerformanceMeasure",  (PyCFunction)s_getPerformanceMeasure, METH_VARARGS, "Get a model performance measure value."},
     {"time",  (PyCFunction)s_time, METH_VARARGS, "Get the model time."},
     {"execString",  (PyCFunction)s_execString, METH_VARARGS, "Execute a flexscript string."},
-    {"yield",  (PyCFunction)s_yield, METH_VARARGS, "Yield a decision or action to the running model."},
-    {"await",  (PyCFunction)s_await, METH_VARARGS, "Await a response or information from the running model."},
+    {"send",  (PyCFunction)s_send, METH_VARARGS, "Yield a decision or action to the running model."},
+    {"receive",  (PyCFunction)s_receive, METH_VARARGS, "Await a response or information from the running model."},
     {nullptr, nullptr, 0, nullptr}
 };
 
@@ -52,6 +54,7 @@ PyTypeObject FlexSimPy::Controller_Type = {
   //  .tp_repr = (reprfunc)myobj_repr,
 };
 
+/*
 PyTypeObject FlexSimPy::PyTreeNode_Type = {
     .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "FlexSimPy.TreeNode",
@@ -62,6 +65,7 @@ PyTypeObject FlexSimPy::PyTreeNode_Type = {
     .tp_doc = "Python object holding a reference to a node in FlexSim's tree",
     //.tp_new = PyType_GenericNew,
 };
+*/
 
 PyDoc_STRVAR(fsPyDoc, "A module for launching and controlling FlexSim.");
 
@@ -148,25 +152,41 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
     Py_RETURN_NONE;
 }
 
-PyObject* FlexSimPy::yield(PyObject* args)
+
+PyObject* FlexSimPy::sendToController(PyObject* self, PyObject* args)
 {
-    if (!inProcessController) {
+    // This method is called from FlexSim's main thread, and is meant to send a value to the controller
+    // (you should call controller.receive() to receive the value sent).
+    if (inProcessController == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "No controller to send value to");
         return nullptr;
     }
+    auto controller = inProcessController;
 
-    std::unique_lock lock(inProcessController->awaitMutex);
-    inProcessController->awaitValue = PyTuple_GetItem(args, 0);
-    inProcessController->awaitCondition.notify_one();
+    std::unique_lock lock(controller->receiveMutex);
+    controller->receiveValues.push(PyTuple_GetItem(args, 0));
+
+    Py_RETURN_NONE;
 }
 
-PyObject* FlexSimPy::await(PyObject* args)
+PyObject* FlexSimPy::receiveFromController(PyObject* self, PyObject* args)
 {
-    if (!inProcessController) {
+    // This method is called from FlexSim's main thread, and is meant to send a value to the controller
+    // (you should call controller.receive() to receive the value sent).
+    if (inProcessController == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "No controller to send value to");
         return nullptr;
     }
-    std::unique_lock lock(inProcessController->awaitMutex);
-    inProcessController->awaitCondition.wait(lock);
-    return inProcessController->yieldValue;
+    auto controller = inProcessController;
+
+    std::unique_lock lock(controller->receiveMutex);
+
+    if (controller->sendValues.size() == 0) {
+        controller->sendCondition.wait(lock);
+    }
+    auto value = controller->sendValues.front();
+    controller->sendValues.pop();
+    return value;
 }
 
 PyObject* Controller::__new__(PyTypeObject* type, PyObject* args, PyObject* kwargs)
@@ -333,31 +353,44 @@ PyObject* Controller::execString(PyObject* args)
 }
 
 
-PyObject* Controller::yield(PyObject* args)
+PyObject* Controller::send(PyObject* args)
 {
+    // Controller::send() is called on the controller/python thread (not on FlexSim's thread). However, it 
+    // locks the sendMutex, so I know sendValues won't be changed by multiple threads.
     if (concurrencyType == LAUNCH_SYNCHRONOUS) {
-        PyErr_SetString(PyExc_RuntimeError, "Calling Controller.yield() in synchronous mode not allowed.");
+        PyErr_SetString(PyExc_RuntimeError, "Calling Controller.send() in synchronous mode not allowed.");
         return nullptr;
     }
-    std::unique_lock lock(yieldMutex);
-    yieldValue = PyTuple_GetItem(args, 0);
-    yieldCondition.notify_one();
-    return nullptr;
+    std::unique_lock lock(sendMutex);
+    sendValues.push(PyTuple_GetItem(args, 0));
+    sendCondition.notify_all();
+    Py_RETURN_NONE;
 }
 
-PyObject* Controller::await(PyObject* args)
+PyObject* Controller::receive(PyObject* args)
 {
-    Py_BEGIN_ALLOW_THREADS;
-    std::unique_lock lock(awaitMutex);
-    awaitCondition.wait(lock);
+    // Controller::received() is called on the controller/python thread (not on FlexSim's thread). However, it 
+    // locks the sendMutex, so I know sendValues won't be changed by multiple threads.
+    if (concurrencyType == LAUNCH_SYNCHRONOUS) {
+        PyErr_SetString(PyExc_RuntimeError, "Calling Controller.receive() in synchronous mode not allowed.");
+        return nullptr;
+    }
+    std::unique_lock lock(receiveMutex);
+    if (receiveValues.size() == 0) {
+        Py_BEGIN_ALLOW_THREADS
+        receiveCondition.wait(lock);
+        Py_END_ALLOW_THREADS
+    }
+    PyObject* value = PyConverter::convertToPyObject(receiveValues.front());
+    receiveValues.pop();
 
-    Py_END_ALLOW_THREADS
-    return awaitValue;
+    return value;
 }
 
 PyMODINIT_FUNC
 PyInit_FlexSimPy(void)
 {
+    MessageBox(NULL, "Hello", "WORLD", MB_OK);
     PyObject* m;
 
     FlexSimPy::inst.checkBindToLoadedApp();
@@ -387,8 +420,5 @@ PyInit_FlexSimPy(void)
 
     return m;
 }
-void PyTreeNode::deallocate(PyTreeNode* self)
-{
 
-}
 }

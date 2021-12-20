@@ -20,9 +20,12 @@ struct Controller {
     std::mutex awaitMutex;
     std::condition_variable awaitCondition;
     PyObject* awaitValue = nullptr;
-    std::mutex yieldMutex;
-    std::condition_variable yieldCondition;
-    PyObject* yieldValue = nullptr;
+    std::mutex sendMutex;
+    std::condition_variable sendCondition;
+    std::queue<PyObject*> sendValues;
+    std::mutex receiveMutex;
+    std::condition_variable receiveCondition;
+    std::queue<PyObject*> receiveValues;
 
     static PyObject* __new__(PyTypeObject* self, PyObject* args, PyObject* kwargs);
     static int __init__(PyObject* self, PyObject* args, PyObject* kwargs);
@@ -40,8 +43,8 @@ struct Controller {
     PyObject* getPerformanceMeasure(PyObject* args);
     PyObject* time(PyObject* args);
     PyObject* execString(PyObject* args);
-    PyObject* yield(PyObject* args);
-    PyObject* await(PyObject* args);
+    PyObject* send(PyObject* args);
+    PyObject* receive(PyObject* args);
 
     template <class Callback>
     PyObject* callMethod(PyObject* args, Callback callback) {
@@ -83,15 +86,15 @@ struct Controller {
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->time(args); }); }
     static PyObject* s_execString(Controller* self, PyObject* args) 
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->execString(args); }); }
-    static PyObject* s_yield(Controller* self, PyObject* args)
-        { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->yield(args); }); }
-    static PyObject* s_await(Controller* self, PyObject* args)
-        { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->await(args); }); }
+    static PyObject* s_send(Controller* self, PyObject* args)
+        { return self->send(args); }
+    static PyObject* s_receive(Controller* self, PyObject* args)
+        { return self->receive(args); }
 
     static std::string errorStr;
 };
 
-
+/*
 struct PyTreeNode {
     PyObject_HEAD
     NodeRef ref;
@@ -99,11 +102,13 @@ struct PyTreeNode {
     static void deallocate(PyTreeNode* self);
     static PyMethodDef methods[];
 };
+*/
 
 
 class FlexSimPy {
 private:
     FlexSimApplication* flexSimApp = nullptr;
+    // for now, you only get one in-process controller
     Controller* inProcessController = nullptr;
 public:
     static FlexSimPy inst;
@@ -117,12 +122,10 @@ public:
 
     PyObject* launch(PyObject* self, PyObject* args, PyObject* kwargs);
     static PyObject* s_launch(PyObject* self, PyObject* args, PyObject* kwargs) { return inst.launch(self, args, kwargs); }
-
-    PyObject* yield(PyObject* args);
-    static PyObject* s_yield(PyObject* self, PyObject* args, PyObject* kwargs) { return inst.yield(args); }
-    PyObject* await(PyObject* args);
-    static PyObject* s_await(PyObject* self, PyObject* args, PyObject* kwargs) { return inst.await(args); }
-
+    PyObject* sendToController(PyObject* self, PyObject* args);
+    static PyObject* s_sendToController(PyObject* self, PyObject* args) { return inst.sendToController(self, args); }
+    PyObject* receiveFromController(PyObject* self, PyObject* args);
+    static PyObject* s_receiveFromController(PyObject* self, PyObject* args) { return inst.sendToController(self, args); }
 
 	//PyObject* find(PyObject* self, PyObject* args);
 	//static PyObject* s_find(PyObject* self, PyObject* args) { return instance.find(self, args); }
@@ -130,6 +133,6 @@ public:
 	static PyMethodDef methods[];
 	static PyModuleDef flexSimPyModule;
     static PyTypeObject Controller_Type;
-    static PyTypeObject PyTreeNode_Type;
+    //static PyTypeObject PyTreeNode_Type;
 };
 }

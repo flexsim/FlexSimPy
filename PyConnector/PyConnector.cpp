@@ -81,7 +81,16 @@ bool PyConnector::initialize()
     if (isInitialized)
         return true;
 
+    initializedWithModelDir = modeldir();
+
     string pPath = modeldir() + platform.envPathSep() + pdir() + "python";
+    hasFlexSimPyController = platform.getLibrary("FlexSimPy") != nullptr;
+    if (hasFlexSimPyController) {
+        // If the FlexSimPy module has already been loaded, then 
+        isInitialized = true;
+        return true;
+    }
+
 
     platform.setEnv("PYTHONPATH", pPath.c_str());
 #if 0
@@ -128,11 +137,7 @@ class StdErrRedirect:\n\
 sys.stdout = StdOutRedirect()\n\
 sys.stderr = StdErrRedirect()\n");
 
-    initializedWithModelDir = modeldir();
     isInitialized = true;
-#ifdef FLEXSIM_EXECUTIVE
-    importedWithResetCount = Executive::instance.resetCount;
-#endif
     return true;
 }
 
@@ -144,10 +149,6 @@ PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
     }
 
     bool reInitByExecutive = false;
-#ifdef FLEXSIM_EXECUTIVE
-    reInitByExecutive = importedWithResetCount != Executive::instance.resetCount;
-    importedWithResetCount = Executive::instance.resetCount;
-#endif
 
     if (initializedWithModelDir != modeldir()) {
         clearModules();

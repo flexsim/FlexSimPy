@@ -126,7 +126,7 @@ public:
 public:
 	engine_export void lockMainThread();
 	engine_export void unlockMainThread();
-	int getMainThreadID();
+	engine_export int getMainThreadID();
 
 engine_private:
 	bool isInitialized = false;
@@ -255,6 +255,12 @@ public:
 	std::mutex timerThreadDataMutex;
 
 	engine_export const char* envPathSep(); // returns a path separator for environment variables: ';' on windows, ':' on POSIX
+
+
+  /// <summary>Returns a handle to the dynamic loaded library</summary>
+	/// <param name="dllName">[in] The name of the dll, excluding the file name extension e.g. .dll, .so. </param>
+  /// <returns>The dll handle </returns>
+	engine_export static DllModule getLibrary(const char* dllName);
 };
 
 extern engine_export Platform platform;
