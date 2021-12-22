@@ -1,4 +1,5 @@
 #include "PyPlatform.h"
+#include <filesystem>
 
 namespace FlexSim {
 
@@ -54,6 +55,35 @@ void* PyPlatform::getProcAddress(Handle hModule, const char* funcName)
 #else 
 	return dlsym(hModule, funcName);
 #endif
+}
+
+bool PyPlatform::isDirectory(const char* dir)
+{
+	try {
+		return std::filesystem::is_directory(std::filesystem::path(dir));
+	}
+	catch (...) {
+		return false;
+	}
+}
+
+std::string PyPlatform::findFlexSimDir()
+{
+	const char* searchPaths[] = {
+		"C:\\Program Files\\FlexSim 2024\\",
+		"C:\\Program Files\\FlexSim 2023 Update 2\\",
+		"C:\\Program Files\\FlexSim 2023 Update 1\\",
+		"C:\\Program Files\\FlexSim 2023\\",
+		"C:\\Program Files\\FlexSim 2022 Update 2\\",
+		"C:\\Program Files\\FlexSim 2022 Update 1\\",
+	};
+
+	constexpr int numPaths = sizeof(searchPaths);
+	for (int i = 1; i < numPaths; i++) {
+		const char* path = searchPaths[i];
+		if (isDirectory(path))
+			return path;
+	}
 }
 
 

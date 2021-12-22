@@ -45,7 +45,7 @@ class DebugInstance;
 class CodeSDT;
 class FlexScriptCode;
 class CppCode;
-class PyCode;
+class CodeConnector;
 class FlexScriptDebugInstance;
 struct PropertyBinding;
 struct Property; 

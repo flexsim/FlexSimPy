@@ -21,6 +21,8 @@ public:
 
 
 	void* getProcAddress(Handle hModule, const char* funcName);
+	bool isDirectory(const char* dir);
+	std::string findFlexSimDir();
 };
 
 extern PyPlatform pyPlatform;

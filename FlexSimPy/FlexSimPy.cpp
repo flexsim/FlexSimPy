@@ -118,11 +118,17 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
             "checkLicense",
             nullptr
         };
-        PyArg_ParseTupleAndKeywords(args, kwargs, "|isspp", (char**)keywords, &concurrencyType, &dllDir, 
+        const char* dllDirCStr = "";
+        PyArg_ParseTupleAndKeywords(args, kwargs, "|isspp", (char**)keywords, &concurrencyType, &dllDirCStr,
             &userArgs, &showGUI, &checkLicense);
+
+        string dllDir(dllDirCStr);
+        if (dllDir[0] == 0)
+            dllDir = pyPlatform.findFlexSimDir();
+
         controller->concurrencyType = concurrencyType;
 
-        pyPlatform.setDllDirectory(dllDir);
+        pyPlatform.setDllDirectory(dllDir.c_str());
         flexSimApp = &FlexSimApplication::getInstance();
 
         int flags = 0;
@@ -165,7 +171,6 @@ PyObject* FlexSimPy::sendToController(PyObject* self, PyObject* args)
 
     std::unique_lock lock(controller->receiveMutex);
     controller->receiveValues.push(PyTuple_GetItem(args, 0));
-
     Py_RETURN_NONE;
 }
 
@@ -387,18 +392,23 @@ PyObject* Controller::receive(PyObject* args)
     return value;
 }
 
+
+PyObject* Controller::pumpAllMessages(PyObject* args)
+{
+    //FlexSim::Platform::getInstance().pumpMainThreadMessages();
+    Py_RETURN_NONE;
+}
+
 PyMODINIT_FUNC
 PyInit_FlexSimPy(void)
 {
-    MessageBox(NULL, "Hello", "WORLD", MB_OK);
-    PyObject* m;
-
+    MessageBox(nullptr, "World", "Hello", MB_OK);
     FlexSimPy::inst.checkBindToLoadedApp();
 
     if (PyType_Ready(&FlexSimPy::Controller_Type) < 0)
         return nullptr;
 
-    m = PyModule_Create(&FlexSimPy::flexSimPyModule);
+    PyObject* m = PyModule_Create(&FlexSimPy::flexSimPyModule);
     if (m == nullptr)
         return nullptr;
 

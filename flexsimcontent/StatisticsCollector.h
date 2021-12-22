@@ -197,6 +197,7 @@ public:
 	virtual TreeNode* getBundleNode() = 0;
 	virtual int getObjectFormatMaxDepth() { return 0; };
 	virtual void prepareToRead() {};
+	void transferDataTo(TreeNode* target);
 
 	static bool inheritsColumnFormatter(TreeNode* object);
 	static ColumnFormatter* toColumnFormatter(TreeNode* object);

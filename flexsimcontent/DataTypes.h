@@ -556,7 +556,7 @@ private:
 		template <class Type>
 		static Type* object(TreeNode* node) { return (Type*)data(node); }
 
-		static std::string getPath(TreeNode* node, TreeNode* relativeTo = nullptr, int byName = 0);
+		static std::string getPath(TreeNode* node, TreeNode* relativeTo = nullptr, int byName = 1);
 
 		static bool isValidNode(TreeNode* node);
 
@@ -1136,26 +1136,26 @@ public:
 		bool checkValidity();
 
 	public:
-		KeyValuePair();
-		~KeyValuePair();
+		engine_export KeyValuePair();
+		engine_export ~KeyValuePair();
 
-		KeyValuePair(const KeyValuePair& other);
-		KeyValuePair& operator=(const KeyValuePair& other);
+		engine_export KeyValuePair(const KeyValuePair& other);
+		engine_export KeyValuePair& operator=(const KeyValuePair& other);
 
-		Variant __getKey();
+		engine_export Variant __getKey();
 		__declspec(property(get=__getKey)) Variant key;
 
-		Variant& __getValue();
+		engine_export Variant& __getValue();
 		__declspec(property(get=__getValue)) Variant& value;
 
-		bool operator==(const KeyValuePair& other);
-		bool operator!=(const KeyValuePair& other);
-		operator bool();
-		bool operator!();
+		engine_export bool operator==(const KeyValuePair& other);
+		engine_export bool operator!=(const KeyValuePair& other);
+		engine_export operator bool();
+		engine_export bool operator!();
 
-		KeyValuePair operator++(int);
+		engine_export KeyValuePair operator++(int);
 
-		static void bindInterface();
+		engine_export static void bindInterface();
 	};
 
 public:
@@ -1192,9 +1192,9 @@ public:
 
 	engine_export operator Variant();
 
-	KeyValuePair begin() const;
-	KeyValuePair find(const Variant& key) const;
-	KeyValuePair end() const;
+	engine_export KeyValuePair begin() const;
+	engine_export KeyValuePair find(const Variant& key) const;
+	engine_export KeyValuePair end() const;
 
 	static void bindInterface();
 
@@ -1283,6 +1283,7 @@ public:
 
 	Variant(bool val) :				type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(int val) :				type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
+	Variant(long val) :				type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(unsigned int val) :		type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(short val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(unsigned short val) :	type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
@@ -1294,6 +1295,7 @@ public:
 	Variant(unsigned long long val) : type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(long long val) : type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 #endif
+
 	Variant(double val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(float val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	explicit Variant(void* val) :	type(VariantType::Pointer), asPointer(val), flags(0), reserved(0) {}
@@ -1407,6 +1409,7 @@ public:
 			return *this; \
 		}\
 
+
 	DEFINE_ASSIGNMENT_OPERATOR(const Variant&)
 	DEFINE_ASSIGNMENT_OPERATOR(int)
 	DEFINE_ASSIGNMENT_OPERATOR(unsigned int)
@@ -1414,6 +1417,7 @@ public:
 	DEFINE_ASSIGNMENT_OPERATOR(unsigned short)
 	DEFINE_ASSIGNMENT_OPERATOR(int64_t)
 	DEFINE_ASSIGNMENT_OPERATOR(uint64_t)
+	DEFINE_ASSIGNMENT_OPERATOR(long)
 	DEFINE_ASSIGNMENT_OPERATOR(double)
 	DEFINE_ASSIGNMENT_OPERATOR(float)
 	DEFINE_ASSIGNMENT_OPERATOR(TreeNode*)
@@ -1838,11 +1842,11 @@ COMPARE_STRING_PAIR(< , false)
 	Variant operator + (const Variant& other) const
 	{
 		if (type == VariantType::Number && other.type == VariantType::Number)
-			return asNumber + other.asNumber;
+			return Variant(asNumber + other.asNumber);
 		else if (type == VariantType::String && other.type == VariantType::String)
 			return Variant(asString + other.asString);
 		else if (type == VariantType::String || other.type == VariantType::String)
-			return operator std::string() + other.operator std::string();
+			return Variant(operator std::string() + other.operator std::string());
 		else if (type == VariantType::Number && other.type == VariantType::Null)
 			return asNumber;
 		else if (type == VariantType::Null && other.type == VariantType::Number)
@@ -3895,6 +3899,9 @@ public:
 	bool operator != (const DateTime& other) const { return m_value != other.value; }
 };
 
+class Parameters;
+class PerformanceMeasures;
+
 class engine_export Model
 {
 public:
@@ -3923,6 +3930,8 @@ public:
 	{
 		return getDateTime(warmupTime());
 	}
+	static Parameters getParameters();
+	static PerformanceMeasures getPerformanceMeasures();
 };
 
 class engine_export RegExResult

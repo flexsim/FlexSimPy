@@ -27,7 +27,7 @@ visible void dllcleanup()
 }
 
 
-PyConnector flexSimPy;
+PyConnector pyConnector;
 const char* PyCode::s_classFactory = "PyCode";
 PyMethodDef PyConnector::consoleRedirectModuleFuncs[] = {
     {"redirectStdOut",  redirectStdOut, METH_VARARGS,  "Redirect stdout to FlexSim"},
@@ -45,7 +45,7 @@ PyModuleDef PyConnector::consoleRedirectModule = {
 
 PyConnector::~PyConnector()
 {
-    if (isInitialized)
+    if (isInitialized && !hasFlexSimPyController)
         Py_Finalize();
 }
 
@@ -73,18 +73,24 @@ PyObject* PyConnector::redirectStdErr(PyObject* self, PyObject* args)
 
 PyMODINIT_FUNC PyInit_consoleredirection(void)
 {
-    return PyModule_Create(&flexSimPy.consoleRedirectModule);
+    return PyModule_Create(&pyConnector.consoleRedirectModule);
 }
 
 bool PyConnector::initialize()
 {
+#ifdef _MSC_VER
+    bool isWindows = true;
+#else
+    bool isWindows = false;
+#endif
     if (isInitialized)
         return true;
 
     initializedWithModelDir = modeldir();
 
+
     string pPath = modeldir() + platform.envPathSep() + pdir() + "python";
-    hasFlexSimPyController = platform.getLibrary("FlexSimPy") != nullptr;
+    hasFlexSimPyController = platform.getModuleHandle(isWindows ? "FlexSimPy.pyd" : "FlexSimPy.so") != nullptr;
     if (hasFlexSimPyController) {
         // If the FlexSimPy module has already been loaded, then 
         isInitialized = true;
@@ -175,17 +181,24 @@ PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
 }
 
 extern "C" PY_CONNECTOR_EXPORT
-PyObject * FlexSimPy_findProc(const char* moduleName, const char* procName)
+PyObject * findProc(const char* moduleName, const char* procName)
 {
-    return flexSimPy.findProc(moduleName, procName);
+    return pyConnector.findProc(moduleName, procName);
 }
+int PyConnector::onBuildFlexScript()
+{
+    clearModules();
+    return 1;
+}
+extern "C" PY_CONNECTOR_EXPORT
+int onBuildFlexScript()
+{
+    return pyConnector.onBuildFlexScript();
+}
+
 
 void PyConnector::clearModules()
 {
-    for (auto& boundNode : boundNodes) {
-        if (boundNode)
-            boundNode->dataType = 0;
-    }
     for (auto& mod : importedModules)
         Py_XDECREF(mod.second);
 
@@ -194,19 +207,12 @@ void PyConnector::clearModules()
 
 void PyConnector::reloadModules()
 {
-    for (auto& boundNode : boundNodes) {
-        if (boundNode)
-            boundNode->dataType = 0;
-    }
     for (auto& mod : importedModules)
         mod.second = PyImport_ReloadModule(mod.second);
 }
 
 PyCode::PyCode(PyObject* func) : func(func)
 {
-#ifdef FLEXSIM_EXECUTIVE
-    resetCount = Executive::instance.resetCount;
-#endif
 }
 PyCode::~PyCode()
 {
@@ -215,26 +221,25 @@ PyCode::~PyCode()
 
 Variant PyCode::evaluate(CallPoint* callPoint)
 {
-#ifdef FLEXSIM_EXECUTIVE
-    if (resetCount != Executive::instance.resetCount) {
-        TreeNode* evalNode = holder->up;
-        flexSimPy.reloadModules();
-        return evalNode->callMemberFunction(0, callPoint->theinstance, callPoint->theclass, nullptr, nullptr, callPoint->involved, callPoint);
-    }
-#endif
     int numParams = parqty(callPoint);
+    PyGILState_STATE state;
+    if (pyConnector.hasFlexSimPyController)
+        state = PyGILState_Ensure();
     PyObject* tuple = PyTuple_New(numParams);
     for (int i = 1; i <= numParams; i++) {
         PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
         PyTuple_SetItem(tuple, (size_t)i - 1, p);
     }
     PyObject* result = PyObject_Call(func, tuple, nullptr);
+    Variant returnVal;
     if (result) {
-        Variant returnVal = PyConverter::convertToVariant(result);
+        returnVal = PyConverter::convertToVariant(result);
         Py_XDECREF(result);
-        return returnVal;
     }
-    return Variant();
+    if (pyConnector.hasFlexSimPyController)
+        PyGILState_Release(state);
+
+    return returnVal;
 }
 
 
@@ -248,34 +253,12 @@ void PyCode::bindToNode(TreeNode* t, PyObject* func)
     PyCode* pyCode = new PyCode(func);
     b->dataType = 0;
     b->addSimpleData(pyCode, 0);
-    flexSimPy.boundNodes.insert(b);
 }
 
 extern "C" PY_CONNECTOR_EXPORT
-void PyCode_bindToNode(TreeNode * t, PyObject * func)
+void bindToNode(TreeNode * t, PyObject * func)
 {
     PyCode::bindToNode(t, func);
 }
 
-
-PyCode* PyCode::getCode(TreeNode* t)
-{
-    TreeNode* branch = t->branch;
-    if (!branch)
-        return nullptr;
-
-    if (branch->dataType != DATA_SIMPLE)
-        return nullptr;
-
-    SimpleDataType* sdt = branch->object<SimpleDataType>();
-    if (sdt->getClassFactory() != s_classFactory)
-        return nullptr;
-
-    return (PyCode*)sdt;
-}
-extern "C" PY_CONNECTOR_EXPORT
-PyCode * PyCode_getCode(TreeNode * t)
-{
-    return PyCode::getCode(t);
-}
 }

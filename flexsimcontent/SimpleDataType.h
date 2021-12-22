@@ -56,6 +56,7 @@ protected:
 public:
 	virtual CouplingDataType* toCoupling() { return nullptr; }
 	virtual TrackedVariable* toTrackedVariable() { return nullptr; }
+	virtual CodeSDT* toCodeSDT() { return nullptr; }
 	engine_export static void appendToDisplayStr(const char* text);
 	static void appendToDisplayStr(double val) { 
 		char buffer[100]; 

@@ -775,10 +775,10 @@ public:
 	TreeNode* ihavethefunctionmyself(int code);
 	TreeNode* findtheclass(int code, TreeNode**);
 	TreeNode* rememberfunctionnode(int code, TreeNode*);
-	bool assertDLLBinding(CppCode*& cppCode);
+	bool assertCodeBinding(CodeSDT*& codeSDT);
 	Variant callMemberFunction(TreeNode* c, TreeNode* i, const VariantParams& params);
 	Variant callMemberFunction(FLEXSIMINTERFACE);
-	void reportDllConnectionFailure(TreeNode* codeNode);
+	void reportCodeBindingFailure(TreeNode* codeNode);
 
 	// gui
 

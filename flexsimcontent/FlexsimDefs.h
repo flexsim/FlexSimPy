@@ -129,6 +129,7 @@ using std::string;
 	#include "TextMesh.h"
 	#include "Light.h"
 	#include "ParameterTable.h"
+	#include "PerformanceMeasureTable.h"
 	#include "Experimenter.h"
 	#include "DataTypes.h"
 

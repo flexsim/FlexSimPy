@@ -45,6 +45,7 @@ struct Controller {
     PyObject* execString(PyObject* args);
     PyObject* send(PyObject* args);
     PyObject* receive(PyObject* args);
+    PyObject* pumpAllMessages(PyObject* args);
 
     template <class Callback>
     PyObject* callMethod(PyObject* args, Callback callback) {
@@ -90,6 +91,8 @@ struct Controller {
         { return self->send(args); }
     static PyObject* s_receive(Controller* self, PyObject* args)
         { return self->receive(args); }
+    static PyObject* s_pumpAllMessages(Controller * self, PyObject * args)
+        { return self->pumpAllMessages(args); }
 
     static std::string errorStr;
 };

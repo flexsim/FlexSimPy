@@ -23,7 +23,6 @@ private:
     bool isInitialized = false;
     std::string initializedWithModelDir;
     std::map<std::string, PyObject*> importedModules;
-    std::set<NodeRef> boundNodes;
 
     bool hasFlexSimPyController = false;
     bool initialize();
@@ -37,6 +36,7 @@ public:
     static PyMethodDef consoleRedirectModuleFuncs[];
     static PyModuleDef consoleRedirectModule;
     PyObject* findProc(const char* moduleName, const char* procName);
+    int onBuildFlexScript();
 };
 
 class PyCode : public CodeSDT {
@@ -49,10 +49,9 @@ public:
     virtual ~PyCode();
     virtual Variant evaluate(CallPoint* callPoint) override;
     static void bindToNode(TreeNode* x, PyObject* func);
-    static PyCode* getCode(TreeNode* x);
     virtual bool isConnected() override { return func != nullptr; }
 };
 
-extern PyConnector flexSimPy;
+extern PyConnector pyConnector;
 
 }

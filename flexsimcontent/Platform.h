@@ -91,7 +91,8 @@ struct MessageQueue {
 	bool get(ThreadMessage& outMsg);
 	bool peek(ThreadMessage& outMsg, bool pop);
 	void post(int msg, void* wParam, void* lParam);
-	int64_t runLoop(bool* whileIsTrue = nullptr);
+	int64_t runLoop(bool* whileIsTrue = nullptr, bool peekOnly = false);
+	void pumpAllMessages() { runLoop(nullptr, true); }
 };
 
 #define FLEXSIM_MESSAGE_USER_CALLBACK 2001
@@ -260,7 +261,10 @@ public:
   /// <summary>Returns a handle to the dynamic loaded library</summary>
 	/// <param name="dllName">[in] The name of the dll, excluding the file name extension e.g. .dll, .so. </param>
   /// <returns>The dll handle </returns>
-	engine_export static DllModule getLibrary(const char* dllName);
+	engine_export static DllModule getModuleHandle(const char* dllName);
+
+	engine_export void pumpMainThreadMessages();
+	engine_export static Platform& getInstance();
 };
 
 extern engine_export Platform platform;
