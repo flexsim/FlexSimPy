@@ -2,6 +2,7 @@
 #include "FlexSimDefs.h"
 #include "PyConverter.h"
 #include <string>
+#include <codecvt>
 
 using std::string;
 
@@ -89,7 +90,6 @@ bool PyConnector::initialize()
     initializedWithModelDir = modeldir();
 
 
-    string pPath = modeldir() + platform.envPathSep() + pdir() + "python";
     hasFlexSimPyController = platform.getModuleHandle(isWindows ? "FlexSimPy.pyd" : "FlexSimPy.so") != nullptr;
     if (hasFlexSimPyController) {
         // If the FlexSimPy module has already been loaded, then 
@@ -97,8 +97,6 @@ bool PyConnector::initialize()
         return true;
     }
 
-
-    platform.setEnv("PYTHONPATH", pPath.c_str());
 #if 0
     PyStatus status;
 
@@ -128,6 +126,12 @@ bool PyConnector::initialize()
         return false;
 #else
     Py_Initialize();
+
+
+    updatePythonPathEnv();
+    int x = Py_IgnoreEnvironmentFlag;
+    pd(x);
+    
 #endif
     //PyObject* redirectModule = PyModule_Create(&consoleRedirectModule);
 
@@ -137,14 +141,45 @@ import sys\n\
 class StdOutRedirect:\n\
     def write(self, stuff):\n\
         consoleredirection.redirectStdOut(stuff)\n\
+    def flush(self):\n\
+        pass\n\
 class StdErrRedirect:\n\
     def write(self, stuff):\n\
         consoleredirection.redirectStdErr(stuff)\n\
+    def flush(self):\n\
+        pass\n\
 sys.stdout = StdOutRedirect()\n\
 sys.stderr = StdErrRedirect()\n");
 
-    isInitialized = true;
-    return true;
+    isInitialized = Py_IsInitialized();
+    return isInitialized;
+}
+
+void PyConnector::updatePythonPathEnv()
+{
+    //string pPath = ".";
+   // pPath.append(platform.envPathSep()).append(modeldir());
+    //pPath.pop_back();
+    //pPath.append(platform.envPathSep()).append(pdir()).append("python"); 
+   // std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+    //std::wstring utf16NativeString = convert.from_bytes(pPath);
+    //PySys_SetPath(utf16NativeString.c_str());
+
+    PyObject* path = PySys_GetObject("path");
+    if (path) {
+        int length = PyList_GET_SIZE(path);
+        string mDir = modeldir();
+        if (!sysPathModel) {
+            sysPathModel = PyUnicode_FromKindAndData(PyUnicode_1BYTE_KIND, mDir.c_str(), mDir.length());
+            PyList_Insert(path, 0, sysPathModel);
+        }
+        else {
+            Py_DECREF(sysPathModel);
+            sysPathModel = PyUnicode_FromKindAndData(PyUnicode_1BYTE_KIND, mDir.c_str(), mDir.length());
+            PyList_SetItem(path, 0, sysPathModel);
+        }
+    }
+
 }
 
 PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
@@ -154,21 +189,18 @@ PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
             return nullptr;
     }
 
-    bool reInitByExecutive = false;
-
-    if (initializedWithModelDir != modeldir()) {
-        clearModules();
+    auto found = importedModules.find(moduleName);
+    PyObject* mod;
+    if (found == importedModules.end()) {
+        mod = PyImport_ImportModule(moduleName);
+        if (mod) {
+            importedModules[moduleName] = mod;
+        }
+        else {
+            printLastPyError();
+        }
     }
-    else if (reInitByExecutive) {
-        reloadModules();
-    }
-
-    if (importedModules.find(moduleName) == importedModules.end()) {
-        auto mod = PyImport_ImportModule(moduleName);
-        importedModules[moduleName] = mod;
-    }
-
-    PyObject* mod = importedModules[moduleName];
+    else mod = found->second;
 
     if (mod) {
         PyObject* func = PyObject_GetAttrString(mod, procName);
@@ -185,11 +217,38 @@ PyObject * findProc(const char* moduleName, const char* procName)
 {
     return pyConnector.findProc(moduleName, procName);
 }
+
+
+void PyConnector::printLastPyError()
+{
+    PyObject* pType, * pValue, * pTraceback;
+    PyErr_Fetch(&pType, &pValue, &pTraceback);
+    PyObject* str = pValue ? PyObject_Str(pValue) : nullptr;
+
+    if (str != nullptr) {
+        Variant val = PyConverter::convertToVariant(str);
+        mpt(val.c_str()); mpr();
+        Py_DECREF(str);
+    }
+    else {
+        mpt("Unknown Python Error"); mpr();
+    }
+}
+
 int PyConnector::onBuildFlexScript()
 {
-    clearModules();
+
+    if (initializedWithModelDir != modeldir()) {
+        clearModules();
+        updatePythonPathEnv();
+        initializedWithModelDir = modeldir();
+    }
+    else {
+        reloadModules();
+    }
     return 1;
 }
+
 extern "C" PY_CONNECTOR_EXPORT
 int onBuildFlexScript()
 {
@@ -207,8 +266,10 @@ void PyConnector::clearModules()
 
 void PyConnector::reloadModules()
 {
-    for (auto& mod : importedModules)
-        mod.second = PyImport_ReloadModule(mod.second);
+    for (auto& mod : importedModules) {
+        if (mod.second)
+            mod.second = PyImport_ReloadModule(mod.second);
+    }
 }
 
 PyCode::PyCode(PyObject* func) : func(func)
@@ -243,7 +304,7 @@ Variant PyCode::evaluate(CallPoint* callPoint)
 }
 
 
-void PyCode::bindToNode(TreeNode* t, PyObject* func)
+CodeSDT* PyCode::bindToNode(TreeNode* t, PyObject* func)
 {
     auto b = t->branch;
     if (!b) {
@@ -253,12 +314,13 @@ void PyCode::bindToNode(TreeNode* t, PyObject* func)
     PyCode* pyCode = new PyCode(func);
     b->dataType = 0;
     b->addSimpleData(pyCode, 0);
+    return pyCode;
 }
 
 extern "C" PY_CONNECTOR_EXPORT
-void bindToNode(TreeNode * t, PyObject * func)
+CodeSDT* bindToNode(TreeNode * t, PyObject * func)
 {
-    PyCode::bindToNode(t, func);
+    return PyCode::bindToNode(t, func);
 }
 
 }

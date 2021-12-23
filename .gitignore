@@ -5,3 +5,4 @@ x64
 *.pdb
 PyConnector310.lib
 out
+TestFlexSimPy/__pycache__

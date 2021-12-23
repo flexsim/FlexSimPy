@@ -191,7 +191,7 @@ public:
 		}
 	}
 	engine_export void dispatchFlexSimMessage(ThreadMessage& msg);
-	std::string getEnv(const char* envName);
+	engine_export const char* getEnv(const char* envName);
 	engine_export int setEnv(const char* envName, const char* value);
 	
 	// formats a string representing a file path
@@ -258,8 +258,8 @@ public:
 	engine_export const char* envPathSep(); // returns a path separator for environment variables: ';' on windows, ':' on POSIX
 
 
-  /// <summary>Returns a handle to the dynamic loaded library</summary>
-	/// <param name="dllName">[in] The name of the dll, excluding the file name extension e.g. .dll, .so. </param>
+  /// <summary>Returns a handle to the dynamic link library</summary>
+	/// <param name="dllName">[in] The name of the dll. This may optionally exclude the file extension e.g. .dll, .so. </param>
   /// <returns>The dll handle </returns>
 	engine_export static DllModule getModuleHandle(const char* dllName);
 

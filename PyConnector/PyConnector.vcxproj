@@ -100,22 +100,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'">
     <LibraryPath>$(ProjectDir)..\python\$(PYTHON_VERSION)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)$(DLL_SUFFIX)</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_10|x64'">
     <ClCompile>
@@ -142,6 +147,12 @@
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
+    <CustomBuildStep>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\FlexSim\program\python\</Command>
+      <Outputs>$(SolutionDir)..\FlexSim\program\python\$(TargetName)$(TargetExt)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Copying to FlexSim Directory</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <ClCompile>
@@ -168,6 +179,12 @@
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
+    <CustomBuildStep>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\FlexSim\program\python\</Command>
+      <Outputs>$(SolutionDir)..\FlexSim\program\python\$(TargetName)$(TargetExt)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Copying to FlexSim Directory</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'">
     <ClCompile>
@@ -194,6 +211,12 @@
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
+    <CustomBuildStep>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\FlexSim\program\python\</Command>
+      <Outputs>$(SolutionDir)..\FlexSim\program\python\$(TargetName)$(TargetExt)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Copying to FlexSim Directory</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'">
     <ClCompile>
@@ -220,6 +243,12 @@
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
+    <CustomBuildStep>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\FlexSim\program\python\</Command>
+      <Outputs>$(SolutionDir)..\FlexSim\program\python\$(TargetName)$(TargetExt)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Copying to FlexSim Directory</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'">
     <ClCompile>
@@ -246,6 +275,12 @@
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
+    <CustomBuildStep>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\FlexSim\program\python\</Command>
+      <Outputs>$(SolutionDir)..\FlexSim\program\python\$(TargetName)$(TargetExt)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+      <Message>Copying to FlexSim Directory</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PyConnector.h" />

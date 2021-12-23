@@ -27,6 +27,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TestFlexSimPy.py" />
+    <Compile Include="TestPyConnector.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />

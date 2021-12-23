@@ -148,7 +148,7 @@
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
-      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>FlexSim.dll;FlexSimContent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -180,7 +180,7 @@
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
-      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>FlexSim.dll;FlexSimContent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -212,7 +212,7 @@
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
-      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>FlexSim.dll;FlexSimContent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -244,7 +244,7 @@
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
-      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>FlexSim.dll;FlexSimContent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -276,7 +276,7 @@
       <AdditionalDependencies>..\flexsimcontent\flexsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)$(DLL_SUFFIX)\$(TargetName)$(TargetExt)</OutputFile>
-      <DelayLoadDLLs>flexsim.dll;flexsimcontent.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>FlexSim.dll;FlexSimContent.dll</DelayLoadDLLs>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)\$(MSBuildProjectName).log</Path>

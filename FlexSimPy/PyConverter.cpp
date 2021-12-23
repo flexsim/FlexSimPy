@@ -1,5 +1,6 @@
 #include "PyConverter.h"
-
+#include <string>
+#include <codecvt>
 
 PyObject* PyConverter::convertToPyObject(const Variant& v)
 {
@@ -42,37 +43,21 @@ Variant PyConverter::convertToVariant(PyObject* obj)
 {
     Variant result;
     if (PyUnicode_Check(obj)) {
-        PyObject* src = obj;
-        size_t size = PyUnicode_GET_LENGTH(obj);
-        int type = PyUnicode_KIND(obj);
-        if (type != PyUnicode_1BYTE_KIND) {
-            src = PyUnicode_AsUTF8String(obj);
-        }
-        const unsigned char* srcBytes = (const unsigned char*)PyUnicode_DATA(src);
-        std::vector<unsigned char> destBytes;
-        destBytes.resize(4 * size + 1);
-        unsigned char* dest = destBytes.data();
-        size_t lengthRead = 0;
-        while (lengthRead < size) {
-            int codePointLength = 1;
-            unsigned char leadChar = *srcBytes;
-            if ((leadChar & ~0x7f) != 0) {
-                if (leadChar <= 0xc0)
-                    codePointLength = 2;
-                else if (leadChar <= 0xd0)
-                    codePointLength = 3;
-                else
-                    codePointLength = 4;
+        std::string utf8Str;
+        switch (PyUnicode_KIND(obj)) {
+            case PyUnicode_2BYTE_KIND:
+            {
+                std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+                utf8Str = convert.to_bytes((wchar_t*)PyUnicode_2BYTE_DATA(obj));
+                break;
             }
-            for (int i = 0; i < codePointLength; i++)
-                *dest++ = *srcBytes++;
-            lengthRead += codePointLength;
+            case PyUnicode_1BYTE_KIND: {
+                utf8Str = (const char*)PyUnicode_1BYTE_DATA(obj);
+                break;
+            }
         }
-        *dest = 0;
-        if (src != obj)
-            Py_XDECREF(src);
 
-        return (char*)destBytes.data();
+        return utf8Str.c_str();
     }
     else if (PyFloat_Check(obj)) {
         return PyFloat_AsDouble(obj);

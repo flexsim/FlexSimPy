@@ -402,7 +402,6 @@ PyObject* Controller::pumpAllMessages(PyObject* args)
 PyMODINIT_FUNC
 PyInit_FlexSimPy(void)
 {
-    MessageBox(nullptr, "World", "Hello", MB_OK);
     FlexSimPy::inst.checkBindToLoadedApp();
 
     if (PyType_Ready(&FlexSimPy::Controller_Type) < 0)

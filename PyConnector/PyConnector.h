@@ -22,10 +22,12 @@ private:
     friend class PyCode;
     bool isInitialized = false;
     std::string initializedWithModelDir;
+    PyObject* sysPathModel = nullptr;
     std::map<std::string, PyObject*> importedModules;
 
     bool hasFlexSimPyController = false;
     bool initialize();
+    void updatePythonPathEnv();
 
 
     void clearModules(); // completely clears all imported modules (i.e. when a new model is opened)
@@ -36,6 +38,7 @@ public:
     static PyMethodDef consoleRedirectModuleFuncs[];
     static PyModuleDef consoleRedirectModule;
     PyObject* findProc(const char* moduleName, const char* procName);
+    void printLastPyError();
     int onBuildFlexScript();
 };
 
@@ -48,7 +51,7 @@ public:
     PyCode() {}
     virtual ~PyCode();
     virtual Variant evaluate(CallPoint* callPoint) override;
-    static void bindToNode(TreeNode* x, PyObject* func);
+    static CodeSDT* bindToNode(TreeNode* x, PyObject* func);
     virtual bool isConnected() override { return func != nullptr; }
 };
 
