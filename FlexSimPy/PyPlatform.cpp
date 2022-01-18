@@ -84,6 +84,7 @@ std::string PyPlatform::findFlexSimDir()
 		if (isDirectory(path))
 			return path;
 	}
+	return "C:\\Program Files\\FlexSim 2022 Update 1\\";
 }
 
 

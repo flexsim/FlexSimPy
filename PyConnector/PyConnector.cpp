@@ -282,7 +282,7 @@ PyCode::~PyCode()
 
 Variant PyCode::evaluate(CallPoint* callPoint)
 {
-    int numParams = parqty(callPoint);
+    int numParams = (int)parqty(callPoint);
     PyGILState_STATE state;
     if (pyConnector.hasFlexSimPyController)
         state = PyGILState_Ensure();

@@ -33,7 +33,6 @@ struct Controller {
     static PyMethodDef methods[];
 
     treenode findParameter(const char* name, bool isPerformanceMeasure);
-    PyObject* appCommand(PyObject* args);
     PyObject* open(PyObject* args);
     PyObject* reset(PyObject* args);
     PyObject* run(PyObject* args);
@@ -42,10 +41,9 @@ struct Controller {
     PyObject* setParameter(PyObject* args);
     PyObject* getPerformanceMeasure(PyObject* args);
     PyObject* time(PyObject* args);
-    PyObject* execString(PyObject* args);
+    PyObject* evaluate(PyObject* args);
     PyObject* send(PyObject* args);
     PyObject* receive(PyObject* args);
-    PyObject* pumpAllMessages(PyObject* args);
 
     template <class Callback>
     PyObject* callMethod(PyObject* args, Callback callback) {
@@ -67,8 +65,6 @@ struct Controller {
         }
     }
 
-    static PyObject* s_appCommand(Controller* self, PyObject* args) 
-        { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->appCommand(args); }); }
     static PyObject* s_open(Controller* self, PyObject* args)
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->open(args); }); }
     static PyObject* s_reset(Controller* self, PyObject* args)
@@ -85,14 +81,12 @@ struct Controller {
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->getPerformanceMeasure(args); }); }
     static PyObject* s_time(Controller* self, PyObject* args) 
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->time(args); }); }
-    static PyObject* s_execString(Controller* self, PyObject* args) 
-        { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->execString(args); }); }
+    static PyObject* s_evaluate(Controller* self, PyObject* args) 
+        { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->evaluate(args); }); }
     static PyObject* s_send(Controller* self, PyObject* args)
         { return self->send(args); }
     static PyObject* s_receive(Controller* self, PyObject* args)
         { return self->receive(args); }
-    static PyObject* s_pumpAllMessages(Controller * self, PyObject * args)
-        { return self->pumpAllMessages(args); }
 
     static std::string errorStr;
 };

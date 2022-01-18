@@ -23,9 +23,7 @@ PyMethodDef FlexSimPy::methods[] = {
     {nullptr, nullptr, 0, nullptr}
 };
 
-
 PyMethodDef Controller::methods[] = {
-    {"appCommand",  (PyCFunction)s_appCommand, METH_VARARGS, "Call a FlexSim application command."},
     {"open",  (PyCFunction)s_open, METH_VARARGS, "Open a FlexSim model."},
     {"reset",  (PyCFunction)s_reset, METH_VARARGS, "Reset the currently open FlexSim model."},
     {"run",  (PyCFunction)s_run, METH_VARARGS, "Set the currently open FlexSim model to be running."},
@@ -34,7 +32,7 @@ PyMethodDef Controller::methods[] = {
     {"setParameter",  (PyCFunction)s_setParameter, METH_VARARGS, "Set a model parameter."},
     {"getPerformanceMeasure",  (PyCFunction)s_getPerformanceMeasure, METH_VARARGS, "Get a model performance measure value."},
     {"time",  (PyCFunction)s_time, METH_VARARGS, "Get the model time."},
-    {"execString",  (PyCFunction)s_execString, METH_VARARGS, "Execute a flexscript string."},
+    {"evaluate",  (PyCFunction)s_evaluate, METH_VARARGS, "Evaluate a FlexScript node addressed by its path."},
     {"send",  (PyCFunction)s_send, METH_VARARGS, "Yield a decision or action to the running model."},
     {"receive",  (PyCFunction)s_receive, METH_VARARGS, "Await a response or information from the running model."},
     {nullptr, nullptr, 0, nullptr}
@@ -108,19 +106,19 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
         Controller::__init__((PyObject*)controller, nullptr, nullptr);
         Py_INCREF(inProcessController);
         Py_INCREF(inProcessController);
-        int showGUI = false;
-        int checkLicense = true;
+        bool showGUI = false;
+        bool evaluationLicense = false;
         const char* keywords[] = {
             "concurrency",
-            "dir",
+            "programDir",
             "args",
             "showGUI",
-            "checkLicense",
+            "evaluationLicense",
             nullptr
         };
         const char* dllDirCStr = "";
         PyArg_ParseTupleAndKeywords(args, kwargs, "|isspp", (char**)keywords, &concurrencyType, &dllDirCStr,
-            &userArgs, &showGUI, &checkLicense);
+            &userArgs, &showGUI, &evaluationLicense);
 
         string dllDir(dllDirCStr);
         if (dllDir[0] == 0)
@@ -133,8 +131,8 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
 
         int flags = 0;
         string prefix = "";
-        if (!strstr(userArgs, "maintenance ") && (!showGUI || !checkLicense))
-            prefix.assign("/maintenance ").append(showGUI ? "" : "nogui_").append(checkLicense ? "" : "skiplicensecheck").append(" ");
+        if (!strstr(userArgs, "maintenance ") && (!showGUI || evaluationLicense))
+            prefix.assign("/maintenance ").append(showGUI ? "" : "nogui_").append(evaluationLicense ? "" : "evaluationlicense").append(" ");
         string argStr = prefix + userArgs;
         auto* platform = &FlexSimApplication::getPlatform();
         if (concurrencyType == Controller::LAUNCH_ASYNCHRONOUS) {
@@ -229,24 +227,6 @@ treenode Controller::findParameter(const char* name, bool isPerformanceMeasure)
         }
     }
     return nullptr;
-}
-
-PyObject* Controller::appCommand(PyObject* args)
-{
-    Variant result;
-    Array a = PyConverter::convertTupleToArray(args);
-    switch (a.length) {
-    case 0: break;
-    case 1: result = applicationcommand(a[1].c_str()); break;
-    case 2: result = applicationcommand(a[1].c_str(), a[2]); break;
-    case 3: result = applicationcommand(a[1].c_str(), a[2], a[3]); break;
-    case 4: result = applicationcommand(a[1].c_str(), a[2], a[3], a[4]); break;
-    case 5: result = applicationcommand(a[1].c_str(), a[2], a[3], a[4], a[5]); break;
-    case 6: result = applicationcommand(a[1].c_str(), a[2], a[3], a[4], a[5], a[6]); break;
-    case 7: result = applicationcommand(a[1].c_str(), a[2], a[3], a[4], a[5], a[6], a[7]); break;
-    case 8: result = applicationcommand(a[1].c_str(), a[2], a[3], a[4], a[5], a[6], a[7], a[8]); break;
-    }
-    return PyConverter::convertToPyObject(result);
 }
 
 
@@ -350,10 +330,18 @@ PyObject* Controller::time(PyObject* args)
     return PyFloat_FromDouble(FlexSim::time());
 }
 
-PyObject* Controller::execString(PyObject* args)
+PyObject* Controller::evaluate(PyObject* args)
 {
-    Variant str = PyConverter::convertToVariant(PyTuple_GetItem(args, 0));
-    Variant result = executestring(str.c_str());
+    Variant path = PyConverter::convertToVariant(PyTuple_GetItem(args, 0));
+    treenode node = Model::find(path.c_str());
+    Variant result;
+    if (node) {
+        int numParams = PyTuple_Size(args);
+        std::vector<Variant> params;
+        for (int i = 1; i < numParams; i++)
+            params.push_back(PyConverter::convertToVariant(PyTuple_GetItem(args, i)));
+        result = node->evaluate(VariantParams(params));
+    }
     return PyConverter::convertToPyObject(result);
 }
 
@@ -390,13 +378,6 @@ PyObject* Controller::receive(PyObject* args)
     receiveValues.pop();
 
     return value;
-}
-
-
-PyObject* Controller::pumpAllMessages(PyObject* args)
-{
-    //FlexSim::Platform::getInstance().pumpMainThreadMessages();
-    Py_RETURN_NONE;
 }
 
 PyMODINIT_FUNC

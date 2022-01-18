@@ -1,16 +1,10 @@
 #pragma once
 
 // Need to undef min and max for Clang
-#pragma push_macro("min")
-#pragma push_macro("max")
-#undef min
-#undef max
 #include <regex>
 #include <unordered_map>
 #include <functional>
 #include <math.h>
-#pragma pop_macro("min")
-#pragma pop_macro("max")
 
 #include <string>
 #include <vector>
@@ -1167,25 +1161,25 @@ public:
 	engine_export Map(const Map& other);
 	engine_export Map(Map&& other);
 	engine_export Map(const MapInitializer& init);
-	Map& operator=(const Map& other);
-	Map& operator=(const Variant& other);
+	engine_export Map& operator=(const Map& other);
+	engine_export Map& operator=(const Variant& other);
 	
 	engine_export Variant& operator[](const Variant& key);
-	Variant& operator[](const Map& key);
-	const Variant& operator[](const Variant& key) const;
+	engine_export Variant& operator[](const Map& key);
+	engine_export const Variant& operator[](const Variant& key) const;
 
-	Variant getProperty(const char* propName, unsigned nameHash, bool dieHard);
-	void setProperty(const char* propName, unsigned nameHash, const Variant& toVal);
+	engine_export Variant getProperty(const char* propName, unsigned nameHash, bool dieHard);
+	engine_export void setProperty(const char* propName, unsigned nameHash, const Variant& toVal);
 
-	Array __getKeys() const;
+	engine_export Array __getKeys() const;
 	__declspec(property(get = __getKeys)) Array keys;
 
-	Array __getValues() const;
+	engine_export Array __getValues() const;
 	__declspec(property(get = __getValues)) Array values;
 
-	bool remove(const Variant& key);
-	void clear();
-	Map clone();
+	engine_export bool remove(const Variant& key);
+	engine_export void clear();
+	engine_export Map clone();
 	
 	engine_export bool operator==(const Map& other) const;
 	bool operator!=(const Map& other) const { return !operator==(other); }
@@ -1290,10 +1284,11 @@ public:
 	Variant(char val) :				type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(unsigned char val) :	type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(uint64_t val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
-	Variant(int64_t val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 #ifdef __clang__
 	Variant(unsigned long long val) : type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 	Variant(long long val) : type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
+#else
+	Variant(int64_t val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
 #endif
 
 	Variant(double val) :			type(VariantType::Number), asNumber((double)val), flags(0), reserved(0) {}
@@ -1415,7 +1410,9 @@ public:
 	DEFINE_ASSIGNMENT_OPERATOR(unsigned int)
 	DEFINE_ASSIGNMENT_OPERATOR(short)
 	DEFINE_ASSIGNMENT_OPERATOR(unsigned short)
+#ifndef __clang__
 	DEFINE_ASSIGNMENT_OPERATOR(int64_t)
+#endif
 	DEFINE_ASSIGNMENT_OPERATOR(uint64_t)
 	DEFINE_ASSIGNMENT_OPERATOR(long)
 	DEFINE_ASSIGNMENT_OPERATOR(double)
@@ -2161,7 +2158,12 @@ public:
 	             { params[0] = &p1; params[1] = &p2; params[2] = &p3; params[3] = &p4; params[4] = &p5; params[5] = &p6; params[6] = &p7; params[7] = &p8; params[8] = &p9; params[9] = &p10; params[10] = &p11; params[11] = &p12; params[12] = &p13; params[13] = &p14; params[14] = &p15; params[15] = &p16; params[16] = &p17; params[17] = &p18; params[18] = &p19; params[19] = &p20; }
 
 	VariantParams(const CallPoint& cp);
-	VariantParams(const std::vector<Variant>& v);
+	VariantParams(const std::vector<Variant>& v)
+	{
+		numParams = v.size() > 20 ? 20 : (int)v.size();
+		for (int i = 0; i < numParams; i++)
+			params[i] = &(v[i]);
+	}
 
 	size_t getNumParams() const { return numParams; }
 
@@ -4215,6 +4217,7 @@ void TypedPropertyBinding<PropertyType, typename std::enable_if_t<
 	treenode valAsNode = val;
 	(((UnknownClass*)owner)->*typedSetter)(valAsNode ? FlexSimPrivateTypes::TreeHelper::object<PropertyType>(valAsNode) : nullptr);
 }
+
 
 }
 
