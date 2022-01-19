@@ -233,6 +233,8 @@ void PyConnector::printLastPyError()
     else {
         mpt("Unknown Python Error"); mpr();
     }
+    PyErr_Restore(pType, pValue, pTraceback);
+    PyErr_Clear();
 }
 
 int PyConnector::onBuildFlexScript()
@@ -267,8 +269,17 @@ void PyConnector::clearModules()
 void PyConnector::reloadModules()
 {
     for (auto& mod : importedModules) {
-        if (mod.second)
-            mod.second = PyImport_ReloadModule(mod.second);
+        if (mod.second) {
+            auto newModule = PyImport_ReloadModule(mod.second);
+            if (newModule) {
+                mod.second = newModule;
+            }
+            else {
+                printLastPyError();
+            }
+        }
+        if (!mod.second)
+            importedModules.erase(mod.first);
     }
 }
 
@@ -296,6 +307,9 @@ Variant PyCode::evaluate(CallPoint* callPoint)
     if (result) {
         returnVal = PyConverter::convertToVariant(result);
         Py_XDECREF(result);
+    }
+    else {
+        PyConnector::printLastPyError();
     }
     if (pyConnector.hasFlexSimPyController)
         PyGILState_Release(state);

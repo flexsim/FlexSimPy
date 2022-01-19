@@ -38,7 +38,7 @@ public:
     static PyMethodDef consoleRedirectModuleFuncs[];
     static PyModuleDef consoleRedirectModule;
     PyObject* findProc(const char* moduleName, const char* procName);
-    void printLastPyError();
+    static void printLastPyError();
     int onBuildFlexScript();
 };
 

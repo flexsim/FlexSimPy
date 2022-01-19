@@ -2,7 +2,7 @@
 #include <string>
 #include <codecvt>
 
-PyObject* PyConverter::convertToPyObject(const Variant& v)
+PyObject* PyConverter::convertToPyObject(const Variant& v, bool arrayAsTuple)
 {
     switch (v.type) {
     case VariantType::String:
@@ -13,20 +13,30 @@ PyObject* PyConverter::convertToPyObject(const Variant& v)
     case VariantType::Array: {
         Array a = v;
         int len = a.length;
-        PyObject* list = PyList_New(len);
-        for (int i = 1; i <= len; i++) {
-            PyObject* obj = convertToPyObject(a[i]);
-            PyList_SetItem(list, i - 1, obj);
+        if (!arrayAsTuple) {
+            PyObject* list = PyList_New(len);
+            for (int i = 1; i <= len; i++) {
+                PyObject* obj = convertToPyObject(a[i], false);
+                PyList_SetItem(list, i - 1, obj);
+            }
+            return list;
         }
-        return list;
+        else {
+            PyObject* tuple = PyTuple_New(len);
+            for (int i = 1; i <= len; i++) {
+                PyObject* obj = convertToPyObject(a[i], true);
+                PyTuple_SetItem(tuple, i - 1, obj);
+            }
+            return tuple;
+        }
         break;
     }
     case VariantType::Map: {
         Map m = v;
         PyObject* dict = PyDict_New();
         for (auto iter = m.begin(); iter != m.end(); iter++) {
-            PyObject* key = convertToPyObject(iter.key);
-            PyObject* value = convertToPyObject(iter.value);
+            PyObject* key = convertToPyObject(iter.key, true);
+            PyObject* value = convertToPyObject(iter.value, arrayAsTuple);
             PyDict_SetItem(dict, key, value);
         }
         return dict;
@@ -75,6 +85,7 @@ Variant PyConverter::convertToVariant(PyObject* obj)
             PyObject* element = PyList_GetItem(obj, i);
             result.push(convertToVariant(element));
         }
+        return result;
     }
     else if (PyTuple_Check(obj)) {
         Array result;
@@ -87,10 +98,12 @@ Variant PyConverter::convertToVariant(PyObject* obj)
     }
     else if (PyDict_Check(obj)) {
         Map result;
-        PyObject* key = nullptr, * value = nullptr;
+        PyObject* pyKey = nullptr, * pyValue = nullptr;
         Py_ssize_t pos = 0;
-        while (PyDict_Next(obj, &pos, &key, &value)) {
-            result[convertToVariant(key)] = convertToVariant(value);
+        while (PyDict_Next(obj, &pos, &pyKey, &pyValue)) {
+            Variant key = convertToVariant(pyKey);
+            Variant value = convertToVariant(pyValue);
+            result[key] = value;
         }
         return result;
     }
