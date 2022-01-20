@@ -5,7 +5,7 @@
     <ProjectGuid>c6a7bd76-61a9-4078-87d6-dfd568848ef8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>TestFlexSimPy.py</StartupFile>
-    <SearchPath>..\out\310</SearchPath>
+    <SearchPath>..\out\Deb_3_10\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>TestFlexSimPy</Name>
@@ -14,7 +14,7 @@
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>Global|PythonCore|3.10</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
     <InterpreterArguments>-i </InterpreterArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -27,7 +27,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TestFlexSimPy.py" />
-    <Compile Include="TestPyConnector.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />
