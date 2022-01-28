@@ -34,7 +34,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\out\</OutDir>
+    <OutDir>$(ProjectDir)..\out\</OutDir>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'" Label="Configuration">
@@ -43,7 +43,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\out\</OutDir>
+    <OutDir>$(ProjectDir)..\out\</OutDir>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'" Label="Configuration">
@@ -52,7 +52,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\out\</OutDir>
+    <OutDir>$(ProjectDir)..\out\</OutDir>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'" Label="Configuration">
@@ -61,7 +61,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\out\</OutDir>
+    <OutDir>$(ProjectDir)..\out\</OutDir>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'" Label="Configuration">
@@ -70,7 +70,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\out\</OutDir>
+    <OutDir>$(ProjectDir)..\out\</OutDir>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -163,7 +163,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\..\program\python\</Command>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -205,11 +205,17 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\..\program\python\</Command>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copyheaders.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Copy the latest headers from the flexsim build</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'">
     <ClCompile>
@@ -247,7 +253,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\..\program\python\</Command>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -289,7 +295,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\..\program\python\</Command>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -331,7 +337,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)..\..\program\python\</Command>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>

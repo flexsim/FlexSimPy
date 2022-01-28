@@ -6,7 +6,7 @@
     <ProjectHome>.</ProjectHome>
     <StartupFile>TestFlexSimPy.py</StartupFile>
     <SearchPath>..\out\Deb_3_10\</SearchPath>
-    <WorkingDirectory>.</WorkingDirectory>
+    <WorkingDirectory>..\out\Deb_3_10</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>TestFlexSimPy</Name>
     <RootNamespace>TestFlexSimPy</RootNamespace>
