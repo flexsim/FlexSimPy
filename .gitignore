@@ -7,3 +7,5 @@ PyConnector310.lib
 out
 TestFlexSimPy/__pycache__
 flexsimcontent
+PyConnector/obj
+wix/bin

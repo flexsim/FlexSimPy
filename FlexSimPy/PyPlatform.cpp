@@ -1,5 +1,6 @@
 #include "PyPlatform.h"
 #include <filesystem>
+#include <span>
 
 namespace FlexSim {
 
@@ -78,9 +79,8 @@ std::string PyPlatform::findFlexSimDir()
 		"C:\\Program Files\\FlexSim 2022 Update 1\\",
 	};
 
-	constexpr int numPaths = sizeof(searchPaths);
-	for (int i = 1; i < numPaths; i++) {
-		const char* path = searchPaths[i];
+	auto paths = std::span{ searchPaths };
+	for (auto path : paths) {
 		if (isDirectory(path))
 			return path;
 	}

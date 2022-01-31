@@ -9,3 +9,4 @@ if "%msbuildpath%"=="" (
 %msbuildpath% FlexSimPy.sln /p:Platform=x64;Configuration=Rel_3_9 /t:Rebuild
 %msbuildpath% FlexSimPy.sln /p:Platform=x64;Configuration=Rel_3_8 /t:Rebuild
 %msbuildpath% FlexSimPy.sln /p:Platform=x64;Configuration=Rel_3_7 /t:Rebuild
+%msbuildpath% PyConnector\PyConnectorInstaller.sln /p:Configuration=Release /t:Rebuild

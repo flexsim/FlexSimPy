@@ -12,8 +12,8 @@ namespace FlexSim {
 struct Controller {
     PyObject_HEAD
 
-    static const int LAUNCH_SYNCHRONOUS = 0;
-    static const int LAUNCH_ASYNCHRONOUS = 1;
+    static const int LAUNCH_ASYNCHRONOUS = 0;
+    static const int LAUNCH_SYNCHRONOUS = 1;
     //static const int LAUNCH_INTERPROCESS = 2; // not implemented
     int concurrencyType = LAUNCH_ASYNCHRONOUS;
     std::thread flexSimThread;
@@ -26,9 +26,11 @@ struct Controller {
     std::mutex receiveMutex;
     std::condition_variable receiveCondition;
     std::queue<PyObject*> receiveValues;
+    bool showingGUI = false;
 
     static PyObject* __new__(PyTypeObject* self, PyObject* args, PyObject* kwargs);
     static int __init__(PyObject* self, PyObject* args, PyObject* kwargs);
+    ~Controller();
     static void deallocate(Controller* self);
     static PyMethodDef methods[];
 
@@ -36,6 +38,7 @@ struct Controller {
     PyObject* open(PyObject* args);
     PyObject* reset(PyObject* args);
     PyObject* run(PyObject* args);
+    PyObject* runToTime(PyObject* args);
     PyObject* stop(PyObject* args);
     PyObject* getParameter(PyObject* args);
     PyObject* setParameter(PyObject* args);
@@ -45,10 +48,11 @@ struct Controller {
     PyObject* send(PyObject* args);
     PyObject* receive(PyObject* args);
 
-    template <class Callback>
-    PyObject* callMethod(PyObject* args, Callback callback) {
+
+    PyObject* callMethod(PyObject* args, auto callback) {
+        PyObject* result;
         if (concurrencyType == LAUNCH_SYNCHRONOUS)
-            return callback(args);
+            result = callback(args);
         else {
             PyObject* result = nullptr;
             Py_BEGIN_ALLOW_THREADS
@@ -59,10 +63,10 @@ struct Controller {
                 PyGILState_Release(gstate);
             }, true);
             Py_END_ALLOW_THREADS
-            if (result == nullptr && errorStr.length() > 0)
-                PyErr_SetString(PyExc_RuntimeError, errorStr.c_str());
-            return result;
         }
+        if (result == nullptr && errorStr.length() > 0)
+            PyErr_SetString(PyExc_RuntimeError, errorStr.c_str());
+        return result;
     }
 
     static PyObject* s_open(Controller* self, PyObject* args)
@@ -71,6 +75,8 @@ struct Controller {
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->reset(args); }); }
     static PyObject* s_run(Controller* self, PyObject* args) 
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->run(args); }); }
+    static PyObject* s_runToTime(Controller* self, PyObject* args)
+        {  return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->runToTime(args); }); }
     static PyObject* s_stop(Controller* self, PyObject* args)
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->stop(args); }); }
     static PyObject* s_getParameter(Controller* self, PyObject* args)

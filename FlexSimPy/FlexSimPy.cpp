@@ -5,6 +5,7 @@
 #include "FlexSimDefs.h"
 #include "PyConverter.h"
 #include <chrono>
+#include <filesystem>
 
 using namespace std::chrono_literals;
 using std::string;
@@ -27,14 +28,15 @@ PyMethodDef Controller::methods[] = {
     {"open",  (PyCFunction)s_open, METH_VARARGS, "Open a FlexSim model."},
     {"reset",  (PyCFunction)s_reset, METH_VARARGS, "Reset the currently open FlexSim model."},
     {"run",  (PyCFunction)s_run, METH_VARARGS, "Set the currently open FlexSim model to be running."},
+    {"runToTime",  (PyCFunction)s_runToTime, METH_VARARGS, "Run to a defined time (blocking until the time is reached)."},
     {"stop",  (PyCFunction)s_stop, METH_VARARGS, "Set the currently open FlexSim model to be running."},
     {"getParameter",  (PyCFunction)s_getParameter, METH_VARARGS, "Get a model parameter."},
     {"setParameter",  (PyCFunction)s_setParameter, METH_VARARGS, "Set a model parameter."},
     {"getPerformanceMeasure",  (PyCFunction)s_getPerformanceMeasure, METH_VARARGS, "Get a model performance measure value."},
     {"time",  (PyCFunction)s_time, METH_VARARGS, "Get the model time."},
     {"evaluate",  (PyCFunction)s_evaluate, METH_VARARGS, "Evaluate a FlexScript node addressed by its path."},
-    {"send",  (PyCFunction)s_send, METH_VARARGS, "Yield a decision or action to the running model."},
-    {"receive",  (PyCFunction)s_receive, METH_VARARGS, "Await a response or information from the running model."},
+    {"send",  (PyCFunction)s_send, METH_VARARGS, "Send a value to the running model."},
+    {"receive",  (PyCFunction)s_receive, METH_VARARGS, "Receive a response or information from the running model (blocking)."},
     {nullptr, nullptr, 0, nullptr}
 };
 
@@ -126,22 +128,32 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
 
         controller->concurrencyType = concurrencyType;
 
-        pyPlatform.setDllDirectory(dllDir.c_str());
+        std::filesystem::path path("C:\\Anthony\\Documents\\Repositories\\Dev\\FlexSim\\program");
+        pyPlatform.setDllDirectory(path.generic_string().c_str());
         flexSimApp = &FlexSimApplication::getInstance();
 
         int flags = 0;
         string prefix = "";
         if (!strstr(userArgs, "maintenance ") && (!showGUI || evaluationLicense))
-            prefix.assign("/maintenance ").append(showGUI ? "" : "nogui_").append(evaluationLicense ? "" : "evaluationlicense").append(" ");
+            prefix.assign("/maintenance ").append(showGUI ? "" : "nogui_").append(evaluationLicense ? "evaluationlicense" : "").append(" ");
         string argStr = prefix + userArgs;
         auto* platform = &FlexSimApplication::getPlatform();
         if (concurrencyType == Controller::LAUNCH_ASYNCHRONOUS) {
-
-            controller->flexSimThread = std::thread([this, argStr]() {
-                flexSimApp->initialize(argStr.c_str(), 0, FlexSimApplication::INIT_FLAG_RUN_MESSAGE_LOOP);
-                });
-            platform->lockMainThread();// this will block until the main flexsim thread is finished loading and starts processing messages
-            platform->unlockMainThread();
+            std::mutex mutex;
+            bool isInitialized = false;
+            std::unique_lock<std::mutex> lock(mutex);
+            std::condition_variable condVar;
+            controller->flexSimThread = std::thread([this, argStr, &mutex, &isInitialized, &condVar]() {
+                std::unique_lock<std::mutex> lock(mutex);
+                flexSimApp->initialize(argStr.c_str(), 0, 0);
+                isInitialized = true;
+                auto& platform = flexSimApp->getPlatform();
+                auto& messageQueue = platform.assertThreadMessageQueue(platform.getMainThreadID());
+                lock.unlock();
+                condVar.notify_all();
+                messageQueue.runLoop();
+            });
+            condVar.wait(lock, [&]() { return isInitialized; });
         }
         else {
             flexSimApp->initialize(argStr.c_str(), 0, 0);
@@ -203,6 +215,15 @@ int Controller::__init__(PyObject* self, PyObject* args, PyObject* kwargs)
     return 0;
 }
 
+Controller::~Controller()
+{
+    if (concurrencyType == LAUNCH_ASYNCHRONOUS) {
+        auto* platform = &FlexSimApplication::getPlatform();
+        platform->postThreadMessage(platform->mainThreadID, WM_QUIT, 0, 0);
+        flexSimThread.join();
+    }
+}
+
 void Controller::deallocate(Controller* self)
 {
     self->~Controller();
@@ -252,6 +273,23 @@ PyObject* Controller::run(PyObject* args)
         set(node("MAIN:/project/exec/step"), runSpeed);
     }
     applicationcommand("run");
+    Py_RETURN_NONE;
+}
+
+PyObject* Controller::runToTime(PyObject* args)
+{
+    double toTime = -1.0;
+    PyArg_ParseTuple(args, "d", &toTime);
+    TreeNode* events = node("MAIN:/project/exec/events");
+ 
+    while (events->first && events->first->object<FlexSimEvent>()->time < toTime)
+        step();
+    
+    if (events->first)
+        node("MAIN:/project/exec/time")->value = toTime;
+
+    if (showingGUI)
+        repaintall();
     Py_RETURN_NONE;
 }
 

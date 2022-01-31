@@ -168,6 +168,10 @@
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copyheaders.bat</Command>
+      <Message>Copy the latest headers from the flexsim build</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'">
     <ClCompile>
@@ -258,6 +262,10 @@
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copyheaders.bat</Command>
+      <Message>Copy the latest headers from the flexsim build</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'">
     <ClCompile>
@@ -300,6 +308,10 @@
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copyheaders.bat</Command>
+      <Message>Copy the latest headers from the flexsim build</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'">
     <ClCompile>
@@ -342,6 +354,10 @@
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copyheaders.bat</Command>
+      <Message>Copy the latest headers from the flexsim build</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PyConnector.h" />
