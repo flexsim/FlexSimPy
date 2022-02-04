@@ -195,11 +195,15 @@ PyObject* FlexSimPy::receiveFromController(PyObject* self, PyObject* args)
     auto controller = inProcessController;
 
     std::unique_lock lock(controller->sendMutex);
-
-    if (controller->sendValues.size() == 0) {
+    auto& platform = FlexSimApplication::getPlatform();
+    auto& messageQueue = platform.assertThreadMessageQueue(platform.mainThreadID);
+    while (controller->sendValues.size() == 0) {
+        lock.unlock();
         Py_BEGIN_ALLOW_THREADS
-        controller->sendCondition.wait(lock, [&]() { return controller->sendValues.size() > 0; });
+        ThreadMessage message;
+        messageQueue.pump();
         Py_END_ALLOW_THREADS
+        lock.lock();
     }
     auto value = controller->sendValues.front();
     controller->sendValues.pop();
@@ -220,8 +224,8 @@ int Controller::__init__(PyObject* self, PyObject* args, PyObject* kwargs)
 Controller::~Controller()
 {
     if (concurrencyType == LAUNCH_ASYNCHRONOUS) {
-        auto* platform = &FlexSimApplication::getPlatform();
-        platform->postThreadMessage(platform->mainThreadID, WM_QUIT, 0, 0);
+        auto& platform = FlexSimApplication::getPlatform();
+        platform.postThreadMessage(platform.mainThreadID, WM_QUIT, 0, 0);
         flexSimThread.join();
     }
 }
@@ -398,7 +402,11 @@ PyObject* Controller::send(PyObject* args)
     PyObject* value = PyTuple_GetItem(args, 0);
     Py_XINCREF(value);
     sendValues.push(value);
-    sendCondition.notify_all();
+
+    // below will "kick" the main thread if it's 
+    // within receiveFromController() waiting for me to send something
+    if (sendValues.size() == 1)
+        FlexSimApplication::getPlatform().callMainThreadCallback([]() {}, false);
     Py_RETURN_NONE;
 }
 

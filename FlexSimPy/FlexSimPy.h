@@ -21,7 +21,6 @@ struct Controller {
     std::condition_variable awaitCondition;
     PyObject* awaitValue = nullptr;
     std::mutex sendMutex;
-    std::condition_variable sendCondition;
     std::queue<PyObject*> sendValues;
     std::mutex receiveMutex;
     std::condition_variable receiveCondition;

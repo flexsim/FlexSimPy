@@ -23,9 +23,9 @@ controller.run(10);
 while controller.time() < 30:
     value = controller.receive();
     print ("Received ", value);
+    print("time: ", controller.time())
     print(" sending ", value * 2);
     controller.send(value * 2);
-    print("time: ", controller.time())
 
 controller.stop();
 output = controller.getPerformanceMeasure("Output");
