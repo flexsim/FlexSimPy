@@ -127,7 +127,7 @@ public:
     PyObject* sendToController(PyObject* self, PyObject* args);
     static PyObject* s_sendToController(PyObject* self, PyObject* args) { return inst.sendToController(self, args); }
     PyObject* receiveFromController(PyObject* self, PyObject* args);
-    static PyObject* s_receiveFromController(PyObject* self, PyObject* args) { return inst.sendToController(self, args); }
+    static PyObject* s_receiveFromController(PyObject* self, PyObject* args) { return inst.receiveFromController(self, args); }
 
 	//PyObject* find(PyObject* self, PyObject* args);
 	//static PyObject* s_find(PyObject* self, PyObject* args) { return instance.find(self, args); }

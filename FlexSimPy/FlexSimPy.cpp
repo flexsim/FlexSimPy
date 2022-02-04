@@ -20,7 +20,7 @@ FlexSimPy FlexSimPy::inst;
 PyMethodDef FlexSimPy::methods[] = {
     {"launch",  (PyCFunction)s_launch, METH_VARARGS | METH_KEYWORDS, "Launch a new instance of FlexSim."},
     {"sendToController",  (PyCFunction)s_sendToController, METH_VARARGS, "Send a value to the controller (matched with controller.receive())."},
-    {"receiveFromController",  (PyCFunction)s_sendToController, METH_VARARGS, "Receive a value from the controller (matched with controller.send())."},
+    {"receiveFromController",  (PyCFunction)s_receiveFromController, METH_VARARGS, "Receive a value from the controller (matched with controller.send())."},
     {nullptr, nullptr, 0, nullptr}
 };
 
@@ -174,13 +174,14 @@ PyObject* FlexSimPy::sendToController(PyObject* self, PyObject* args)
     // This method is called from FlexSim's main thread, and is meant to send a value to the controller
     // (you should call controller.receive() to receive the value sent).
     if (inProcessController == nullptr) {
-        PyErr_SetString(PyExc_RuntimeError, "No controller to send value to");
-        return nullptr;
+        Py_RETURN_NONE;
     }
     auto controller = inProcessController;
 
     std::unique_lock lock(controller->receiveMutex);
-    controller->receiveValues.push(PyTuple_GetItem(args, 0));
+    PyObject* arg = PyTuple_GetItem(args, 0);
+    controller->receiveValues.push(arg);
+    controller->receiveCondition.notify_all();
     Py_RETURN_NONE;
 }
 
@@ -189,15 +190,16 @@ PyObject* FlexSimPy::receiveFromController(PyObject* self, PyObject* args)
     // This method is called from FlexSim's main thread, and is meant to send a value to the controller
     // (you should call controller.receive() to receive the value sent).
     if (inProcessController == nullptr) {
-        PyErr_SetString(PyExc_RuntimeError, "No controller to send value to");
-        return nullptr;
+        Py_RETURN_NONE;
     }
     auto controller = inProcessController;
 
-    std::unique_lock lock(controller->receiveMutex);
+    std::unique_lock lock(controller->sendMutex);
 
     if (controller->sendValues.size() == 0) {
-        controller->sendCondition.wait(lock);
+        Py_BEGIN_ALLOW_THREADS
+        controller->sendCondition.wait(lock, [&]() { return controller->sendValues.size() > 0; });
+        Py_END_ALLOW_THREADS
     }
     auto value = controller->sendValues.front();
     controller->sendValues.pop();
@@ -393,7 +395,9 @@ PyObject* Controller::send(PyObject* args)
         return nullptr;
     }
     std::unique_lock lock(sendMutex);
-    sendValues.push(PyTuple_GetItem(args, 0));
+    PyObject* value = PyTuple_GetItem(args, 0);
+    Py_XINCREF(value);
+    sendValues.push(value);
     sendCondition.notify_all();
     Py_RETURN_NONE;
 }
@@ -409,10 +413,10 @@ PyObject* Controller::receive(PyObject* args)
     std::unique_lock lock(receiveMutex);
     if (receiveValues.size() == 0) {
         Py_BEGIN_ALLOW_THREADS
-        receiveCondition.wait(lock);
+        receiveCondition.wait(lock, [&]() { return receiveValues.size() > 0; });
         Py_END_ALLOW_THREADS
     }
-    PyObject* value = PyConverter::convertToPyObject(receiveValues.front());
+    PyObject* value = receiveValues.front();
     receiveValues.pop();
 
     return value;

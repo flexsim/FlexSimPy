@@ -9,3 +9,4 @@ TestFlexSimPy/__pycache__
 flexsimcontent
 PyConnector/obj
 wix/bin
+*.fsm!

@@ -190,7 +190,10 @@ PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
     }
 
     auto found = importedModules.find(moduleName);
-    PyObject* mod;
+    PyObject* mod = nullptr;
+    PyGILState_STATE state;
+    if (pyConnector.hasFlexSimPyController)
+        state = PyGILState_Ensure();
     if (found == importedModules.end()) {
         mod = PyImport_ImportModule(moduleName);
         if (mod) {
@@ -202,14 +205,17 @@ PyObject* PyConnector::findProc(const char* moduleName, const char* procName)
     }
     else mod = found->second;
 
+    PyObject* func = nullptr;
     if (mod) {
-        PyObject* func = PyObject_GetAttrString(mod, procName);
+       func  = PyObject_GetAttrString(mod, procName);
 
-        if (func && PyCallable_Check(func)) {
-            return func;
+        if (func && !PyCallable_Check(func)) {
+            func = nullptr;
         }
     }
-    return nullptr;
+    if (pyConnector.hasFlexSimPyController)
+        PyGILState_Release(state);
+    return func;
 }
 
 extern "C" PY_CONNECTOR_EXPORT
