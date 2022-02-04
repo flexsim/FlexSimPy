@@ -50,11 +50,10 @@ struct Controller {
 
 
     PyObject* callMethod(PyObject* args, auto callback) {
-        PyObject* result;
+        PyObject* result = nullptr;
         if (concurrencyType == LAUNCH_SYNCHRONOUS)
             result = callback(args);
         else {
-            PyObject* result = nullptr;
             Py_BEGIN_ALLOW_THREADS
             FlexSimApplication::getPlatform().callMainThreadCallback([args, &result, &callback]() {
                 PyGILState_STATE gstate;
@@ -83,7 +82,7 @@ struct Controller {
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->getParameter(args); }); }
     static PyObject* s_setParameter(Controller* self, PyObject* args)
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->setParameter(args); }); }
-    static PyObject* s_getPerformanceMeasure(Controller* self, PyObject* args) 
+    static PyObject* s_getPerformanceMeasure(Controller* self, PyObject* args)
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->getPerformanceMeasure(args); }); }
     static PyObject* s_time(Controller* self, PyObject* args) 
         { return self->callMethod(args, [self](PyObject* args) -> PyObject* {return self->time(args); }); }

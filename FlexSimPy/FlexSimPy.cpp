@@ -149,8 +149,8 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
                 isInitialized = true;
                 auto& platform = flexSimApp->getPlatform();
                 auto& messageQueue = platform.assertThreadMessageQueue(platform.getMainThreadID());
-                lock.unlock();
                 condVar.notify_all();
+                lock.unlock();
                 messageQueue.runLoop();
             });
             condVar.wait(lock, [&]() { return isInitialized; });

@@ -10,6 +10,11 @@ controller.open(scriptPath + "\\PostOfficeModel.fsm")
 print("opened")
 controller.reset();
 print("reset")
-controller.run();
-exit();
+controller.runToTime(3600);
+print("time ", controller.time());
+print("PerformanceMeasure1", controller.getPerformanceMeasure("PerformanceMeasure1"));
+print("Press Enter to continue");
+input();
+
+
 
