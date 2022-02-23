@@ -128,8 +128,7 @@ PyObject* FlexSimPy::launch(PyObject* self, PyObject* args, PyObject* kwargs)
 
         controller->concurrencyType = concurrencyType;
 
-        std::filesystem::path path("C:\\Anthony\\Documents\\Repositories\\Dev\\FlexSim\\program");
-        pyPlatform.setDllDirectory(path.generic_string().c_str());
+        pyPlatform.setDllDirectory(dllDir.c_str());
         flexSimApp = &FlexSimApplication::getInstance();
 
         int flags = 0;
