@@ -163,7 +163,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copytoflexsim.bat $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
+      <Command>copytoflexsim.bat "$(OutDir)$(TargetName)$(TargetExt)" "$(ProjectDir)..\..\..\program\python\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -211,7 +211,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copytoflexsim.bat $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
+      <Command>copytoflexsim.bat "$(OutDir)$(TargetName)$(TargetExt)" "$(ProjectDir)..\..\..\program\python\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -259,7 +259,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copytoflexsim.bat $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
+      <Command>copytoflexsim.bat "$(OutDir)$(TargetName)$(TargetExt)" "$(ProjectDir)..\..\..\program\python\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -307,7 +307,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copytoflexsim.bat $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
+      <Command>copytoflexsim.bat "$(OutDir)$(TargetName)$(TargetExt)" "$(ProjectDir)..\..\..\program\python\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
@@ -355,7 +355,7 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copytoflexsim.bat $(OutDir)$(TargetName)$(TargetExt) $(ProjectDir)..\..\..\program\python\</Command>
+      <Command>copytoflexsim.bat "$(OutDir)$(TargetName)$(TargetExt)" "$(ProjectDir)..\..\..\program\python\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying to FlexSim Directory</Message>
