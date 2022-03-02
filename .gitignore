@@ -10,3 +10,6 @@ flexsimcontent
 PyConnector/obj
 wix/bin
 *.fsm!
+*.pyd
+*.gz
+*.whl
