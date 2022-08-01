@@ -2,47 +2,47 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Module Id="PyConnector" Language="1033" Version="1.0.0.0">
     <!--Program GUIDs>
-      <FlexSim="61F89110-B85F-4550-BD27-937568C4A8B0">
-      <FlexSimChinese="E940169B-DF94-46C3-B1AA-181023FF5A67">
-      <FlexSimJapanese="38771578-7787-4E57-8360-20AFA145261F">
-      <FlexSimChineseTraditional="5E9E60C8-5B16-46AD-A37A-B32B3116040B">
+      <FlexSim="6502EFF1-F553-4192-BE13-AA192AD7C9E4">
+      <FlexSimChinese="4CDD35F4-CF16-490B-B103-80E15A367EC4">
+      <FlexSimJapanese="2C7669D3-66C6-4DEF-BE3F-3E1CFC7CE928">
+      <FlexSimChineseTraditional="C0ACBFA1-BDF1-49D3-9BD6-5D296904785C">
     </Program GUIDs-->
     <Package Id="7978E597-6CBA-488E-A53E-E6ED1F66BA9A" Manufacturer="FlexSim Software Products Inc." InstallerVersion="200" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="MergeRedirectFolder">
         <!--Program GUIDs>
-          <FlexSim="D2BCF0B8-A117-45C2-8BDA-B7AB8C50D801">
-          <FlexSimChinese="341D64DA-F61C-4726-9677-0680A995C2D8">
-          <FlexSimJapanese="79481B38-83BE-4B51-84E9-67C803D561C5">
-          <FlexSimChineseTraditional="CEFB392F-CDC8-4236-AEDB-B2F80F714D41">
+          <FlexSim="B220EC37-BB8B-465B-9A89-87F8F3ECA44F">
+          <FlexSimChinese="1EF3A7CB-E44C-4D82-A065-D53952629DAD">
+          <FlexSimJapanese="A5114B27-B98E-4E27-A632-57BDA387F4E2">
+          <FlexSimChineseTraditional="B993041C-6134-4514-BF2E-96D66DEECE62">
         </Program GUIDs-->
         <Component Id="PyConnector_37" Guid="E5F7138E-ADCE-4E1A-B053-3137829CBBCC" KeyPath="yes">
           <File Name="PyConnector37.dll" Source="$(var.ProjectDir)../out/PyConnector37.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="BB773201-5940-4367-B515-C127420CAAC5">
-          <FlexSimChinese="EF461BD3-0A02-4628-89DE-8F4C0E8B8417">
-          <FlexSimJapanese="88C98C37-B63A-42D3-8045-DADB9321FA91">
-          <FlexSimChineseTraditional="AD2ABDC9-EA9C-480F-99A3-7A9D4A8A2D00">
+          <FlexSim="31009F2F-3100-4ACE-B3DC-F2020651B97E">
+          <FlexSimChinese="802D9390-5318-4277-BBB3-925DBC3EA17B">
+          <FlexSimJapanese="23EA4829-D1AE-45FD-8A26-8A018C6D3EE8">
+          <FlexSimChineseTraditional="D83B5602-19C5-47D8-B292-128FDC889B83">
         </Program GUIDs-->
         <Component Id="PyConnector_38" Guid="509401D4-B640-4379-A928-EF6C859C5277" KeyPath="yes">
           <File Name="PyConnector38.dll" Source="$(var.ProjectDir)../out/PyConnector38.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="3696A2C5-D9C3-4ECB-80B8-2F67529D9A0D">
-          <FlexSimChinese="B6D281D7-68C4-4721-8135-C4E0E817EA3F">
-          <FlexSimJapanese="BB4E2D6B-3AE5-40AC-8374-721135ED5284">
-          <FlexSimChineseTraditional="6ACA2BDB-68BE-4FEC-895E-844E7A4B86F9">
+          <FlexSim="DC368E5F-6A5E-419C-BA42-099205BBA8D6">
+          <FlexSimChinese="D57D0B43-916A-49D8-BB43-10F3E198B8DB">
+          <FlexSimJapanese="26F39FFC-98F8-4E7F-9B60-2DC90ADD5718">
+          <FlexSimChineseTraditional="89976829-64FA-4521-9648-A8B6EB3D91BD">
         </Program GUIDs-->
         <Component Id="PyConnector_39" Guid="D048E99E-9E56-4175-8A80-148B444C044B" KeyPath="yes">
           <File Name="PyConnector39.dll" Source="$(var.ProjectDir)../out/PyConnector39.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="055133CB-DE46-495A-B23E-8192EC445A1F">
-          <FlexSimChinese="A1EAEB27-F42A-4427-8FB5-447127F43E29">
-          <FlexSimJapanese="D23AEF18-44A7-4C62-A6F6-7B30DAA08F46">
-          <FlexSimChineseTraditional="D4BA0947-05C3-4BC6-9E05-550BA5AAD8EE">
+          <FlexSim="09EB88ED-4227-45B6-B9D5-E63EE9CBF69D">
+          <FlexSimChinese="4FD12995-2375-49D8-A6A2-7EFECDD273A3">
+          <FlexSimJapanese="95E137CA-B38B-428E-9F0F-CC1DCB120CFA">
+          <FlexSimChineseTraditional="53A815E6-09D7-40BE-9681-6440D4FF81D4">
         </Program GUIDs-->
         <Component Id="PyConnector_310" Guid="88D2FEB0-5273-4919-B407-4497B8BFD97B" KeyPath="yes">
           <File Name="PyConnector310.dll" Source="$(var.ProjectDir)../out/PyConnector310.dll" />
