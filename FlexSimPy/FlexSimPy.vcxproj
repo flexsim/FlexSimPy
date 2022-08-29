@@ -35,7 +35,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -44,7 +44,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -53,7 +53,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -62,7 +62,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -71,7 +71,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -169,7 +169,7 @@
       <PreprocessorDefinitions>WIN32;NOMINMAX;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4190;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
@@ -205,7 +205,7 @@
       <PreprocessorDefinitions>WIN32;NOMINMAX;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4190;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
@@ -241,7 +241,7 @@
       <PreprocessorDefinitions>WIN32;NOMINMAX;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4190;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
@@ -277,7 +277,7 @@
       <PreprocessorDefinitions>WIN32;NOMINMAX;COMPILING_FLEXSIM_CONTENT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\flexsimcontent;$(ProjectDir)..\python\$(PYTHON_VERSION)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4190;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>

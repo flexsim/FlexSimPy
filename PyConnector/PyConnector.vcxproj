@@ -35,7 +35,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deb_3_10|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -44,7 +44,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_9|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -53,7 +53,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_8|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -62,7 +62,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_3_7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -71,7 +71,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\out\</OutDir>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
