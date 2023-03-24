@@ -1,6 +1,7 @@
 #include "PyConnector.h"
 #include "FlexSimDefs.h"
 #include "PyConverter.h"
+#include "PyXDecRefPtr.h"
 #include <string>
 #include <codecvt>
 
@@ -303,16 +304,17 @@ Variant PyCode::evaluate(CallPoint* callPoint)
     PyGILState_STATE state;
     if (pyConnector.hasFlexSimPyController)
         state = PyGILState_Ensure();
-    PyObject* tuple = PyTuple_New(numParams);
+
+    PyXDecRefPtr tuple = PyTuple_New(numParams);
+
     for (int i = 1; i <= numParams; i++) {
         PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
         PyTuple_SetItem(tuple, (size_t)i - 1, p);
     }
-    PyObject* result = PyObject_Call(func, tuple, nullptr);
+    PyXDecRefPtr result = PyObject_Call(func, tuple, nullptr);
     Variant returnVal;
     if (result) {
         returnVal = PyConverter::convertToVariant(result);
-        Py_XDECREF(result);
     }
     else {
         PyConnector::printLastPyError();

@@ -369,6 +369,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PyConnector.h" />
+    <ClInclude Include="PyXDecRefPtr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\FlexSimPy\PyConverter.cpp" />
