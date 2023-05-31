@@ -25,6 +25,11 @@
     <DebugSymbols>true</DebugSymbols>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Rel_3_11' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <OutputPath>bin\Rel_3_11\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="TestFlexSimPy.py" />
   </ItemGroup>

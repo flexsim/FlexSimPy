@@ -13,3 +13,4 @@ wix/bin
 *.pyd
 *.gz
 *.whl
+*.vcxproj.user

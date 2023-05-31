@@ -47,6 +47,15 @@
         <Component Id="PyConnector_310" Guid="88D2FEB0-5273-4919-B407-4497B8BFD97B" KeyPath="yes">
           <File Name="PyConnector310.dll" Source="$(var.ProjectDir)../out/PyConnector310.dll" />
         </Component>
+        <!--Program GUIDs>
+          <FlexSim="D0E35B81-3EBB-4624-AC45-FAFB4EE6C6D4">
+          <FlexSimChinese="20F6AE47-A2E9-418A-BBE0-D28A724C4B55">
+          <FlexSimJapanese="67F7DC6D-3FF5-4DC2-BFC2-195025641F19">
+          <FlexSimChineseTraditional="76FC9FAD-1401-4460-BAFA-F0D3088385DF">
+        </Program GUIDs-->
+        <Component Id="PyConnector_311" Guid="397D0487-B658-4DDB-B878-0C0D1FCB4ECD" KeyPath="yes">
+          <File Name="PyConnector311.dll" Source="$(var.ProjectDir)../out/PyConnector311.dll" />
+        </Component>
       </Directory>
     </Directory>
   </Module>
