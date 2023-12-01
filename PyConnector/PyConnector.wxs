@@ -2,62 +2,62 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Module Id="PyConnector" Language="1033" Version="1.0.0.0">
     <!--Program GUIDs>
-      <FlexSim="5488184A-34D7-4F0C-A2F4-B5998DA22CFE">
-      <FlexSimChinese="7B692EB5-0615-4A4C-AAA3-0FBA8A0D8F98">
-      <FlexSimJapanese="D261D25B-02D6-43BF-8F18-EDDD1361CA9E">
-      <FlexSimChineseTraditional="FCBA70F3-DDB2-4EA2-89E2-B67D4205467E">
-      <FlexSimSpanish="51378299-A0C0-4AAE-8238-9135DCBE0691">
+      <FlexSim="13E944C9-52DB-47D1-8D57-0618EFDB5554">
+      <FlexSimChinese="FE9C5212-0673-4BFA-A836-FA80A1E0190A">
+      <FlexSimJapanese="BB93981A-AC99-43CA-B5E1-FF1B2831AC50">
+      <FlexSimChineseTraditional="B9AC328C-DA50-41C9-8489-F6E4842D3357">
+      <FlexSimSpanish="7B237AEF-502B-4D88-A138-3A7EF6B7E36B">
     </Program GUIDs-->
     <Package Id="7978E597-6CBA-488E-A53E-E6ED1F66BA9A" Manufacturer="FlexSim Software Products Inc." InstallerVersion="200" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="MergeRedirectFolder">
         <!--Program GUIDs>
-          <FlexSim="D9465E82-6C85-4EAD-8134-72D35A952CD7">
-          <FlexSimChinese="03C19BA2-49CF-476B-8863-7706BC0866C1">
-          <FlexSimJapanese="6B05D106-0C8C-4121-84D3-44C2D861811A">
-          <FlexSimChineseTraditional="BDECF829-4F94-4F50-ADC7-A3C8A377BD11">
-          <FlexSimSpanish="D4A6852B-E688-4ECA-A77F-7128D6FAB5CA">
+          <FlexSim="0C90D2E1-849F-4FAC-9448-BB72E8709803">
+          <FlexSimChinese="8545BD56-205D-4C07-8A52-1E05BC330C7C">
+          <FlexSimJapanese="29AF964B-D760-489A-9C41-32E34BB81C61">
+          <FlexSimChineseTraditional="E94F2CBC-1F0E-40C0-A834-1D24EF544AF6">
+          <FlexSimSpanish="7F76FECE-957C-4508-8F59-68D7950670B9">
         </Program GUIDs-->
         <Component Id="PyConnector_37" Guid="E5F7138E-ADCE-4E1A-B053-3137829CBBCC" KeyPath="yes">
           <File Name="PyConnector37.dll" Source="$(var.ProjectDir)../out/PyConnector37.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="48060972-159B-4081-8231-2E1703BD2E30">
-          <FlexSimChinese="AF7D34F4-576E-4AFA-A2C3-290181B6D718">
-          <FlexSimJapanese="59F2DF76-89BC-4D59-92A0-95A5DF113C0B">
-          <FlexSimChineseTraditional="AA8FC910-65B3-4F7D-BA1D-339839E844CC">
-          <FlexSimSpanish="1AC34BC0-13F1-40FB-95BC-AC7EB35FF6FB">
+          <FlexSim="DEE2F6BC-3561-4CA9-95B6-E8EC745DEB3E">
+          <FlexSimChinese="380E55E4-B6CA-498E-9AD9-6AA7E0DEDC22">
+          <FlexSimJapanese="B2884AD3-55FD-4D77-9307-E1F8CBA8DC68">
+          <FlexSimChineseTraditional="55F11E3A-5AEB-4A04-B20E-2B57DC5532D2">
+          <FlexSimSpanish="C9A8AFC7-A531-4AD8-9E78-64E555D7FEF1">
         </Program GUIDs-->
         <Component Id="PyConnector_38" Guid="509401D4-B640-4379-A928-EF6C859C5277" KeyPath="yes">
           <File Name="PyConnector38.dll" Source="$(var.ProjectDir)../out/PyConnector38.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="43F34198-87A0-4817-A231-EB1B647D989E">
-          <FlexSimChinese="48EB59E5-F938-4ABC-9AB7-D897D48C7987">
-          <FlexSimJapanese="30645214-AA7F-405F-AE42-006493C76747">
-          <FlexSimChineseTraditional="332FB1F8-081C-48BD-8BDD-4651C48DEF70">
-          <FlexSimSpanish="C7E76405-F41C-42E8-AA39-08C0F7A0DE2E">
+          <FlexSim="2C93D9EF-E61A-4D07-8BE3-563E91F018A4">
+          <FlexSimChinese="42215653-7FE5-490C-9410-5494256CF3C8">
+          <FlexSimJapanese="4FF576EB-3927-48F7-92B5-7D1C95868056">
+          <FlexSimChineseTraditional="C0C144DF-8131-44D8-89DC-31136FBC5F68">
+          <FlexSimSpanish="51C0ED3D-9220-4B52-B908-C160F3A3D37D">
         </Program GUIDs-->
         <Component Id="PyConnector_39" Guid="D048E99E-9E56-4175-8A80-148B444C044B" KeyPath="yes">
           <File Name="PyConnector39.dll" Source="$(var.ProjectDir)../out/PyConnector39.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="A68EB80E-601A-4346-8BA3-550F6155D294">
-          <FlexSimChinese="D5998DBC-5732-44D4-84FC-B4944344C33B">
-          <FlexSimJapanese="E6177B43-27AD-44BC-BACE-D20F8F1EE031">
-          <FlexSimChineseTraditional="CB335FEA-9A2E-4C70-888D-F314E78A7DE7">
-          <FlexSimSpanish="73850285-8A06-497E-AFA7-C325BB01A39D">
+          <FlexSim="8481E925-B0E0-47EA-A741-C1086F04978B">
+          <FlexSimChinese="6337F03D-00C6-4859-862E-9662E3F7322C">
+          <FlexSimJapanese="74AFE62B-2B12-4840-AD1B-6316A86A3F65">
+          <FlexSimChineseTraditional="BD56631E-5A59-4A45-8673-FAB304D0238E">
+          <FlexSimSpanish="8D3D746B-0907-47E4-900F-A5E9D510E0FC">
         </Program GUIDs-->
         <Component Id="PyConnector_310" Guid="88D2FEB0-5273-4919-B407-4497B8BFD97B" KeyPath="yes">
           <File Name="PyConnector310.dll" Source="$(var.ProjectDir)../out/PyConnector310.dll" />
         </Component>
         <!--Program GUIDs>
-          <FlexSim="57A7D6B3-D520-4324-86ED-E79C84EC1984">
-          <FlexSimChinese="2C16A507-F947-4013-9ECE-4929EB8C0616">
-          <FlexSimJapanese="45A4CCFF-527A-41EF-806A-7A5AC6898E5C">
-          <FlexSimChineseTraditional="B2F2269B-6FB6-4257-99F2-3111F158BE7B">
-          <FlexSimSpanish="F9FB3AB5-ABE2-4947-B36F-7A7750D05950">
+          <FlexSim="0602B6FC-507F-4709-A752-8FE7FEDA8E98">
+          <FlexSimChinese="75CCF52A-07DA-433E-B5CC-03EB2C82BA9C">
+          <FlexSimJapanese="845495B8-4623-4392-94C6-E796B4E061D2">
+          <FlexSimChineseTraditional="1A8CE112-071A-4EBB-8D8C-403D6B6FE473">
+          <FlexSimSpanish="7DF084C8-DD85-44B2-821C-26B3D551735B">
         </Program GUIDs-->
         <Component Id="PyConnector_311" Guid="397D0487-B658-4DDB-B878-0C0D1FCB4ECD" KeyPath="yes">
           <File Name="PyConnector311.dll" Source="$(var.ProjectDir)../out/PyConnector311.dll" />
