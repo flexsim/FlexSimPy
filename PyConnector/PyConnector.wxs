@@ -13,26 +13,6 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="MergeRedirectFolder">
         <!--Program GUIDs>
-          <FlexSim="CD2190DC-0D1A-41C2-A099-EAE3D6770B3F">
-          <FlexSimChinese="0A220748-6DCF-46D8-8699-3D882EE71D3B">
-          <FlexSimJapanese="29F832D1-7A12-4CD9-951D-68F20FCAB3FF">
-          <FlexSimChineseTraditional="7E72A95F-D602-4B24-B5FB-A89860DCEDD7">
-          <FlexSimSpanish="EBDEEC14-8252-4E6D-B8EE-53F6E959DEFF">
-        </Program GUIDs-->
-        <Component Id="PyConnector_37" Guid="E5F7138E-ADCE-4E1A-B053-3137829CBBCC" KeyPath="yes">
-          <File Name="PyConnector37.dll" Source="$(var.ProjectDir)../out/PyConnector37.dll" />
-        </Component>
-        <!--Program GUIDs>
-          <FlexSim="3ED0E16A-99DD-40A3-B62C-13E446957A74">
-          <FlexSimChinese="62A25384-A5FE-4A25-B116-B799EAA236B1">
-          <FlexSimJapanese="344F3CC2-BE2F-4A11-B6BB-EC131C9A0EFF">
-          <FlexSimChineseTraditional="0CADA6FD-E88A-474D-ADBE-8ECB09EFED74">
-          <FlexSimSpanish="C093C441-9811-4D13-8D77-324F1513CDCE">
-        </Program GUIDs-->
-        <Component Id="PyConnector_38" Guid="509401D4-B640-4379-A928-EF6C859C5277" KeyPath="yes">
-          <File Name="PyConnector38.dll" Source="$(var.ProjectDir)../out/PyConnector38.dll" />
-        </Component>
-        <!--Program GUIDs>
           <FlexSim="F7FDE2B1-E5E8-4D21-829A-3671F6292214">
           <FlexSimChinese="CFCE5D40-52FB-43F7-8C7C-98D1D86267EA">
           <FlexSimJapanese="DF5305F2-920B-4BC7-8118-947CFC4AA317">
