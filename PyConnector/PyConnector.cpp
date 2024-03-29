@@ -305,13 +305,13 @@ Variant PyCode::evaluate(CallPoint* callPoint)
     if (pyConnector.hasFlexSimPyController)
         state = PyGILState_Ensure();
 
-    PyXDecRefPtr tuple = PyTuple_New(numParams);
+    PyObject* tuple = PyTuple_New(numParams);
 
     for (int i = 1; i <= numParams; i++) {
         PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
         PyTuple_SetItem(tuple, (size_t)i - 1, p);
     }
-    PyXDecRefPtr result = PyObject_Call(func, tuple, nullptr);
+    PyObject* result = PyObject_Call(func, tuple, nullptr);
     Variant returnVal;
     if (result) {
         returnVal = PyConverter::convertToVariant(result);
@@ -319,8 +319,14 @@ Variant PyCode::evaluate(CallPoint* callPoint)
     else {
         PyConnector::printLastPyError();
     }
-    if (pyConnector.hasFlexSimPyController)
+    if (pyConnector.hasFlexSimPyController) {
+        // releasing the GIL handles tuple/result memory
         PyGILState_Release(state);
+    } else {
+        // Otherwise it needs to be handled here
+        Py_XDECREF(result);
+        Py_XDECREF(tuple);
+    }
 
     return returnVal;
 }
