@@ -17,10 +17,10 @@ The FlexSimPy repository includes two primary visual studio projects:
 ## Build Instructions
 
 FlexSimPy is implemented similar to how a standard FlexSim module is set up 
-using the [module SDK](https://docs.flexsim.com/en/22.0/Reference/DeveloperAdvancedUser/ModuleSDK/KeyConcepts/):
+using the [module SDK](https://docs.flexsim.com/Reference/DeveloperAdvancedUser/ModuleSDK/KeyConcepts/):
 
   1. Set up a FlexSim development environment as 
-    [described in the module SDK documentation](https://docs.flexsim.com/en/22.0/Reference/DeveloperAdvancedUser/ModuleSDK/QuickStart/#preparing).
+    [described in the module SDK documentation](https://docs.flexsim.com/Reference/DeveloperAdvancedUser/ModuleSDK/QuickStart/#preparing).
   2. Clone this repository to live in the 'FlexSim\modules\' directory.
   3. Open the FlexSimPy.sln solution in visual studio.
   4. Choose the configuration that corresponds to the python version you 
