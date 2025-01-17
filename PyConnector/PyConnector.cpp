@@ -8,22 +8,22 @@
 using std::string;
 
 namespace FlexSim {
-visible ObjectDataType* createodtderivative(char* classname)
+fsvisible ObjectDataType* createodtderivative(char* classname)
 {
 	return NULL;
 }
 
-visible SimpleDataType* createsdtderivative(char* classname)
+fsvisible SimpleDataType* createsdtderivative(char* classname)
 {
 	return NULL;
 }
 
-visible void dllinitialize()
+fsvisible void dllinitialize()
 {
 
 }
 
-visible void dllcleanup()
+fsvisible void dllcleanup()
 {
 
 }
