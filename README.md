@@ -1,11 +1,11 @@
 # FlexSimPy
 
-The FlexSimPy repository includes two primary visual studio projects:
+The FlexSimPy repository includes two primary Visual Studio projects:
   1. The PyConnector project implements the ability to bind the evaluation
     of nodes in FlexSim's tree to the evaluation of python functions. The 
-    project is implemented to work with python versions 3.7, 3.8, 3.9 and 3.10. 
-    The output DLLs from this project are included in the installed version 
-    of FlexSim.
+    project is implemented to work with python versions 3.9, 3.10, 3.11 and 
+    3.12. The output DLLs from this project are included in the installed 
+    version of FlexSim.
     
   2. The FlexSimPy project implements a mechanism for controlling the 
     FlexSim application from python. It compiles to a valid python 
@@ -22,10 +22,10 @@ using the [module SDK](https://docs.flexsim.com/Reference/DeveloperAdvancedUser/
   1. Set up a FlexSim development environment as 
     [described in the module SDK documentation](https://docs.flexsim.com/Reference/DeveloperAdvancedUser/ModuleSDK/QuickStart/#preparing).
   2. Clone this repository to live in the 'FlexSim\modules\' directory.
-  3. Open the FlexSimPy.sln solution in visual studio.
+  3. Open the FlexSimPy.sln solution in Visual Studio.
   4. Choose the configuration that corresponds to the python version you 
     will be using (Deb_3_10 is a debug configuration built against python 3.10, 
-    Rel_3_9 is release build against python 3.9, etc.).
+    Rel_3_9 is a release build against python 3.9, etc.).
   5. Build the solution.
 
 - If you are building it to create your own customized PyConnector, then the target dll 
