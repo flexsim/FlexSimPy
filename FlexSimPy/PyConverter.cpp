@@ -34,10 +34,26 @@ PyObject* PyConverter::convertToPyObject(const Variant& v, bool arrayAsTuple)
     case VariantType::Map: {
         Map m = v;
         PyObject* dict = PyDict_New();
+        if (!dict)
+            return nullptr;
         for (auto iter = m.begin(); iter != m.end(); iter++) {
             PyObject* key = convertToPyObject(iter.key, true);
             PyObject* value = convertToPyObject(iter.value, arrayAsTuple);
-            PyDict_SetItem(dict, key, value);
+            if (!key || !value) {
+                Py_XDECREF(key);
+                Py_XDECREF(value);
+                Py_DECREF(dict);
+                return nullptr;
+            }
+            if (PyDict_SetItem(dict, key, value) != 0) {
+                Py_DECREF(key);
+                Py_DECREF(value);
+                Py_DECREF(dict);
+                return nullptr;
+            }
+            
+            Py_DECREF(key);
+            Py_DECREF(value);
         }
         return dict;
     }

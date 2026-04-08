@@ -301,9 +301,12 @@ PyCode::~PyCode()
 Variant PyCode::evaluate(CallPoint* callPoint)
 {
     int numParams = (int)parqty(callPoint);
-    PyGILState_STATE state;
-    if (pyConnector.hasFlexSimPyController)
+    PyGILState_STATE state{};
+    bool gilHeld = false;
+    if (pyConnector.hasFlexSimPyController) {
         state = PyGILState_Ensure();
+        gilHeld = true;
+    }
 
     PyObject* tuple = PyTuple_New(numParams);
 
@@ -319,14 +322,11 @@ Variant PyCode::evaluate(CallPoint* callPoint)
     else {
         PyConnector::printLastPyError();
     }
-    if (pyConnector.hasFlexSimPyController) {
-        // releasing the GIL handles tuple/result memory
+    // Must decref while GIL is held; PyGILState_Release does not free these objects
+    Py_XDECREF(result);
+    Py_XDECREF(tuple);
+    if (gilHeld)
         PyGILState_Release(state);
-    } else {
-        // Otherwise it needs to be handled here
-        Py_XDECREF(result);
-        Py_XDECREF(tuple);
-    }
 
     return returnVal;
 }
