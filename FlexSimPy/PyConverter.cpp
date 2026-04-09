@@ -1,4 +1,5 @@
 #include "PyConverter.h"
+#include "../PyConnector/PyXDecRefPtr.h"
 #include <string>
 #include <codecvt>
 
@@ -33,29 +34,18 @@ PyObject* PyConverter::convertToPyObject(const Variant& v, bool arrayAsTuple)
     }
     case VariantType::Map: {
         Map m = v;
-        PyObject* dict = PyDict_New();
-        if (!dict)
+        PyXDecRefPtr dict(PyDict_New());
+        if (!dict.get())
             return nullptr;
         for (auto iter = m.begin(); iter != m.end(); iter++) {
-            PyObject* key = convertToPyObject(iter.key, true);
-            PyObject* value = convertToPyObject(iter.value, arrayAsTuple);
-            if (!key || !value) {
-                Py_XDECREF(key);
-                Py_XDECREF(value);
-                Py_DECREF(dict);
+            PyXDecRefPtr key(convertToPyObject(iter.key, true));
+            PyXDecRefPtr value(convertToPyObject(iter.value, arrayAsTuple));
+            if (!key || !value)
                 return nullptr;
-            }
-            if (PyDict_SetItem(dict, key, value) != 0) {
-                Py_DECREF(key);
-                Py_DECREF(value);
-                Py_DECREF(dict);
+            if (PyDict_SetItem(dict, key, value) != 0)
                 return nullptr;
-            }
-            
-            Py_DECREF(key);
-            Py_DECREF(value);
         }
-        return dict;
+        return dict.release();
     }
     default: {
         Py_INCREF(Py_None);
