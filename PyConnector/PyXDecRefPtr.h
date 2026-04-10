@@ -9,9 +9,19 @@ private:
 public:
 	PyXDecRefPtr() = delete;
 	PyXDecRefPtr(const PyXDecRefPtr& other) = delete;
-	PyXDecRefPtr(PyObject* object) : object(object) {};
+	explicit PyXDecRefPtr(PyObject* object) : object(object) {}
+
 	~PyXDecRefPtr() { Py_XDECREF(object); }
 
-	operator PyObject* () { return object; }
-	PyObject* operator->() { return object; }
+	PyObject* release() noexcept
+	{
+		PyObject* tmp = object;
+		object = nullptr;
+		return tmp;
+	}
+
+	PyObject* get() const noexcept { return object; }
+
+	operator PyObject*() const { return object; }
+	PyObject* operator->() const { return object; }
 };
