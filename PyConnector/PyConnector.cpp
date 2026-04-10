@@ -301,32 +301,31 @@ PyCode::~PyCode()
 Variant PyCode::evaluate(CallPoint* callPoint)
 {
     int numParams = (int)parqty(callPoint);
-    PyGILState_STATE state;
-    if (pyConnector.hasFlexSimPyController)
-        state = PyGILState_Ensure();
-
-    PyObject* tuple = PyTuple_New(numParams);
-
-    for (int i = 1; i <= numParams; i++) {
-        PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
-        PyTuple_SetItem(tuple, (size_t)i - 1, p);
-    }
-    PyObject* result = PyObject_Call(func, tuple, nullptr);
-    Variant returnVal;
-    if (result) {
-        returnVal = PyConverter::convertToVariant(result);
-    }
-    else {
-        PyConnector::printLastPyError();
-    }
+    PyGILState_STATE state{};
+    bool gilHeld = false;
     if (pyConnector.hasFlexSimPyController) {
-        // releasing the GIL handles tuple/result memory
-        PyGILState_Release(state);
-    } else {
-        // Otherwise it needs to be handled here
-        Py_XDECREF(result);
-        Py_XDECREF(tuple);
+        state = PyGILState_Ensure();
+        gilHeld = true;
     }
+
+    Variant returnVal;
+    {
+        PyXDecRefPtr tuple(PyTuple_New(numParams));
+        for (int i = 1; i <= numParams; i++) {
+            PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
+            PyTuple_SetItem(tuple, (size_t)i - 1, p);
+        }
+        PyXDecRefPtr result(PyObject_Call(func, tuple, nullptr));
+        if (result) {
+            returnVal = PyConverter::convertToVariant(result);
+        }
+        else {
+            PyConnector::printLastPyError();
+        }
+    }
+    // PyXDecRefPtr destructors run here while GIL is still held
+    if (gilHeld)
+        PyGILState_Release(state);
 
     return returnVal;
 }
