@@ -308,23 +308,22 @@ Variant PyCode::evaluate(CallPoint* callPoint)
         gilHeld = true;
     }
 
-    PyObject* tuple = PyTuple_New(numParams);
-
-    for (int i = 1; i <= numParams; i++) {
-        PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
-        PyTuple_SetItem(tuple, (size_t)i - 1, p);
-    }
-    PyObject* result = PyObject_Call(func, tuple, nullptr);
     Variant returnVal;
-    if (result) {
-        returnVal = PyConverter::convertToVariant(result);
+    {
+        PyXDecRefPtr tuple(PyTuple_New(numParams));
+        for (int i = 1; i <= numParams; i++) {
+            PyObject* p = PyConverter::convertToPyObject(_param(i, callPoint));
+            PyTuple_SetItem(tuple, (size_t)i - 1, p);
+        }
+        PyXDecRefPtr result(PyObject_Call(func, tuple, nullptr));
+        if (result) {
+            returnVal = PyConverter::convertToVariant(result);
+        }
+        else {
+            PyConnector::printLastPyError();
+        }
     }
-    else {
-        PyConnector::printLastPyError();
-    }
-    // Must decref while GIL is held; PyGILState_Release does not free these objects
-    Py_XDECREF(result);
-    Py_XDECREF(tuple);
+    // PyXDecRefPtr destructors run here while GIL is still held
     if (gilHeld)
         PyGILState_Release(state);
 

@@ -35,7 +35,7 @@ PyObject* PyConverter::convertToPyObject(const Variant& v, bool arrayAsTuple)
     case VariantType::Map: {
         Map m = v;
         PyXDecRefPtr dict(PyDict_New());
-        if (!dict.get())
+        if (!dict)
             return nullptr;
         for (auto iter = m.begin(); iter != m.end(); iter++) {
             PyXDecRefPtr key(convertToPyObject(iter.key, true));
